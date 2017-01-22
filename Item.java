@@ -5,36 +5,15 @@ import java.util.Calendar;
 /**
  * Created by Kevin on 1/20/2017.
  */
-public class Item {
+public abstract class Item {
 
-    private String id;
-    private String name;
-    private String type;
-    private String authorArtist;
-    private boolean available;
-    private Calendar dateDue;
+    protected String id;
+    protected String name;
+    protected String type;
+    protected boolean available;
+    protected Calendar dateDue;
+    protected int checkOutTime;
 
-
-
-    public Item() {};
-
-    public Item(String id, String name, String type, String authorArtist) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.authorArtist = authorArtist;
-        available = true;
-        dateDue = Calendar.getInstance();
-    }
-
-    public Item(String id, String name, String type) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.authorArtist = "";
-        available = true;
-        dateDue = Calendar.getInstance();
-    }
 
     public String getName() {
         return name;
@@ -48,9 +27,6 @@ public class Item {
         return type;
     }
 
-    public String getAuthorArtist() {
-        return authorArtist;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -62,10 +38,6 @@ public class Item {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public void setAuthorArtist(String authorArtist) {
-        this.authorArtist = authorArtist;
     }
 
     public Calendar getDateDue() {

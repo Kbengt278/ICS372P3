@@ -37,11 +37,8 @@ public class Library {
         else if (!list.get(index).isAvailable())
             return null;
         else {
-            int days = 7;
-            if (list.get(index).getType().compareToIgnoreCase("book") == 0)
-                days = 21;
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_YEAR, days);
+            cal.add(Calendar.DAY_OF_YEAR, list.get(index).checkOutTime);
             list.get(index).setAvailable(false);
             list.get(index).setDateDue(cal);
             return list.get(index);
@@ -49,7 +46,10 @@ public class Library {
     }
 
     public boolean addFileData(File file){
-        Item item = new Item();
+        String id = new String();
+        String type = new String();
+        String name = new String();
+        String authorArtist = new String();
         String textLine = "";
         String keyName = "";
         String value;
@@ -87,9 +87,22 @@ public class Library {
                     break;
                 case END_OBJECT:
                     if (startArray) {
-                        index = search(item.getId(), 0, list.size()-1);
+                        index = search(id, 0, list.size()-1);
                         if (index < 0) {
-                            list.add(-(index + 1), new Item(item.getId(), item.getName(), item.getType(), item.getAuthorArtist()));
+                            switch (type.toLowerCase()){
+                                case "cd" :
+                                    list.add(-(index + 1), new Cd(id, name, type, authorArtist));
+                                    break;
+                                case "book" :
+                                    list.add(-(index + 1), new Book(id, name, type, authorArtist));
+                                    break;
+                                case "magazine" :
+                                    list.add(-(index + 1), new Magazine(id, name, type));
+                                    break;
+                                case "dvd" :
+                                    list.add(-(index + 1), new Dvd(id, name, type));
+                                    break;
+                            }
                         }
                         //break;
                     }
@@ -99,7 +112,6 @@ public class Library {
                 case VALUE_NULL:
                 case VALUE_TRUE:
 //                    System.out.println(event.toString());
-                    item.setAuthorArtist("");
                     break;
                 case KEY_NAME:
 //                    System.out.print(event.toString() + " " + parser.getString() + " - ");
@@ -111,17 +123,17 @@ public class Library {
                     value = parser.getString();
                     switch(keyName.toLowerCase()) {
                         case "item_name" :
-                            item.setName(value);
+                            name = value;
                             break;
                         case "item_type" :
-                            item.setType(value);
+                            type = value;
                             break;
                         case "item_id" :
-                            item.setId(value);
+                            id = value;
                             break;
                         case "item_artist" :
                         case "item_author" :
-                            item.setAuthorArtist(value);
+                            authorArtist = value;
                             break;
                     }
                     break;
@@ -168,11 +180,20 @@ public class Library {
     }
 
     public void printLib(){
+        String temp;
         for (int i = 0; i < list.size(); i++) {
             System.out.println("Id = " + list.get(i).getId());
             System.out.println("Name = " + list.get(i).getName());
             System.out.println("Type = " + list.get(i).getType());
-            System.out.println("AuthorArtist = " + list.get(i).getAuthorArtist() + "\n");
+            System.out.println("Check out period = " + list.get(i).checkOutTime);
+            if (list.get(i).getType().compareToIgnoreCase("cd") == 0) {
+                Cd tmp = (Cd) list.get(i);
+                System.out.println("Artist = " + tmp.getArtist() + "\n");
+            }
+            if (list.get(i).getType().compareToIgnoreCase("book") == 0) {
+                Book tmp = (Book) list.get(i);
+                System.out.println("Artist = " + tmp.getAuthor() + "\n");
+           }
 
         }
     }
