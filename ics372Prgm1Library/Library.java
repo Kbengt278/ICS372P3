@@ -22,13 +22,13 @@ public class Library {
     public Library() {
     }
 
-    public boolean checkIn(String id) {
+    public Item checkIn(String id) {
         int index = search(id, 0, list.size() - 1);
         if (index < 0)
-            return false;
+            return null;
         else {
             list.get(index).setAvailable(true);
-            return true;
+            return list.get(index);
         }
     }
 

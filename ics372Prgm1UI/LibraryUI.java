@@ -29,7 +29,7 @@ public class LibraryUI extends Application {
 
     private final TextField itemId = new TextField();
     private final TextArea text = new TextArea();
-    final FileChooser fileChooser = new FileChooser();
+    private final FileChooser fileChooser = new FileChooser();
     private Library lib = new Library();
     //   Library lib = new Library();
 
@@ -91,11 +91,15 @@ public class LibraryUI extends Application {
         // Process the btCheckIn button -- run the simulation
         //
         btCheckIn.setOnAction(e -> {
-            if (!lib.checkIn(itemId.getText().trim())) {
+            Item item = (lib.checkIn(itemId.getText().trim()));
+            if (item == null) {
                 text.appendText("Item " + itemId.getText().trim() + " does not exist\n");
             }
             else {
-                text.appendText("Item " + itemId.getText().trim() + " checked in successfully\n");
+                text.appendText("Item " + itemId.getText().trim() + " "
+                                + item.getType() + " : "
+                                + item.getName() + "\n" +
+                        "checked in successfully\n");
             }
         });
 
@@ -108,7 +112,10 @@ public class LibraryUI extends Application {
                 text.appendText("Item " + itemId.getText().trim() + " is not available\n");
             }
             else {
-                text.appendText("Item " + itemId.getText().trim() + " checked out successfully. Due date is "
+                text.appendText("Item " + itemId.getText().trim() + " "
+                        + item.getType() + " : "
+                        + item.getName() + "\n"
+                        + "checked out successfully. Due date is "
                         + (item.getDateDue().get(Calendar.MONTH)+1)
                         + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
                         + "/" + item.getDateDue().get(Calendar.YEAR)+ "\n");
