@@ -1,4 +1,4 @@
-package ics372Prgm1;
+package ics372Prgm1Items;
 
 import java.util.Calendar;
 /**
