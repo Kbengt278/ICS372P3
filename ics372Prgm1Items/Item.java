@@ -26,8 +26,8 @@ public class Item {
         this.id = id;
         this.name = name;
         this.type = type;
-        available = true;
-        dateDue = Calendar.getInstance();
+        this.available = true;
+        this.dateDue = Calendar.getInstance();
     }
 
     public String getName() {
