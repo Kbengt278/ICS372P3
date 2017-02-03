@@ -6,14 +6,13 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
 import java.io.*;
 import java.util.Calendar;
+
 import javafx.stage.FileChooser;
 
 
@@ -23,12 +22,12 @@ import javafx.stage.FileChooser;
  * The 4 types of items are : CD, DVD, book, and magazine.
  *
  * @author Kevin Bengtson
- *
  */
 public class LibraryUI extends Application {
 
     private final TextField itemId = new TextField();
     private final TextArea text = new TextArea();
+    private final ScrollPane scrollPane = new ScrollPane();
     private final FileChooser fileChooser = new FileChooser();
     private Library lib = new Library();
     //   Library lib = new Library();
@@ -68,8 +67,8 @@ public class LibraryUI extends Application {
         HBox textPane = new HBox();
         textPane.setAlignment(Pos.CENTER);
         textPane.setPadding(new Insets(1.5, .5, .5, .5));
-
-        textPane.getChildren().add(text);
+        textPane.getChildren().add(scrollPane);
+        scrollPane.setContent(text);
         HBox.setHgrow(textPane, Priority.ALWAYS);
         textPane.setMaxHeight(Double.MAX_VALUE);
         textPane.setMinHeight(300);
@@ -94,11 +93,10 @@ public class LibraryUI extends Application {
             Item item = (lib.checkIn(itemId.getText().trim()));
             if (item == null) {
                 text.appendText("Item " + itemId.getText().trim() + " does not exist\n");
-            }
-            else {
+            } else {
                 text.appendText("Item " + itemId.getText().trim() + " "
-                                + item.getType() + " : "
-                                + item.getName() + "\n" +
+                        + item.getType() + " : "
+                        + item.getName() + "\n" +
                         "checked in successfully\n");
             }
         });
@@ -108,17 +106,16 @@ public class LibraryUI extends Application {
         //
         btCheckOut.setOnAction(e -> {
             Item item = (lib.checkOut(itemId.getText().trim()));
-            if  (item == null) {
+            if (item == null) {
                 text.appendText("Item " + itemId.getText().trim() + " is not available\n");
-            }
-            else {
+            } else {
                 text.appendText("Item " + itemId.getText().trim() + " "
                         + item.getType() + " : "
                         + item.getName() + "\n"
                         + "checked out successfully. Due date is "
-                        + (item.getDateDue().get(Calendar.MONTH)+1)
+                        + (item.getDateDue().get(Calendar.MONTH) + 1)
                         + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
-                        + "/" + item.getDateDue().get(Calendar.YEAR)+ "\n");
+                        + "/" + item.getDateDue().get(Calendar.YEAR) + "\n");
             }
         });
 
@@ -133,11 +130,12 @@ public class LibraryUI extends Application {
             );
             File file = fileChooser.showOpenDialog(primaryStage);
             if (file != null) {
-//                text.appendText(file.getAbsolutePath() + "\n");
+                text.appendText("File added: " + file.getAbsolutePath() + "\n");
                 lib.addFileData(file);
+            } else {
+                text.appendText("No file added." + "\n");
             }
 //            lib.printLib();
-
         });
     }
 
