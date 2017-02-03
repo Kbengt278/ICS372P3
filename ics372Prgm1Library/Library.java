@@ -13,14 +13,29 @@ import java.util.Scanner;
 
 
 /**
+ * Library class manages a library of items. Items are placed in an
+ * ArrayList. Methods used to manage the list include:
+ * checkIn(), checkOut(), addFileData(), search(), and printLib().
+ *
  * Created by Kevin on 1/20/2017.
  */
+
 public class Library {
 
     private ArrayList<Item> list = new ArrayList<>(100);
 
     public Library() {
     }
+
+    /**
+    * checkIn() accepts a Sting argument. The String is supposed to
+    * be a valid itemId of an Item object. The class method search()
+    * is used to assure the Item is in the Library. If it is, the
+    * Item class setAvailable() method is used to make the Item
+    * available, and the Item is returned to the UI where the method
+    * is called. If it is not, null is returned to UI where method
+    * is called.
+     */
 
     public Item checkIn(String id) {
         int index = search(id, 0, list.size() - 1);
@@ -31,6 +46,18 @@ public class Library {
             return list.get(index);
         }
     }
+
+    /**
+    * checkOut() accepts a String argument. The String is supposed
+    * to be a valid itemId of an Item object. The class method search()
+    * is used to assure the Item is in the Library. If it is,
+    * isAvailable() method of the Item class is used to determine if
+    * the Item is currently checked out. If it is checked out,
+    * null is returned to the call from the UI. If it is available,
+    * a Calender object is used in addition to Item's getCheckOutTime
+    * to setDateDue(), and the Item is returned to the call from the UI.
+    * If the Item is not in the Library, null is returned.
+     */
 
     public Item checkOut(String id) {
         int index = search(id, 0, list.size() - 1);
@@ -46,6 +73,13 @@ public class Library {
             return list.get(index);
         }
     }
+
+    /**
+    * addFileData() accepts a file argument. A Scanner object is
+    * used to read the file if it exists. If it does not,
+    * FileNotFoundException is thrown. A JsonParser object is used
+    * to parse the file and add the file's data to the Library.
+     */
 
     public boolean addFileData(File file){
         String id = new String();
@@ -81,47 +115,41 @@ public class Library {
             switch(event) {
                 case START_ARRAY:
                     startArray = true;
-//                    System.out.println(event.toString());
                     break;
                 case END_ARRAY:
                     startArray = false;
-//                    System.out.println(event.toString());
                     break;
                 case END_OBJECT:
                     if (startArray) {
                         index = search(id, 0, list.size()-1);
                         if (index < 0) {
-                            switch (type.toLowerCase()){
-                                case "cd" :
+                            switch (type.toLowerCase()) {
+                                case "cd":
                                     list.add(-(index + 1), new Cd(id, name, type, authorArtist));
                                     break;
-                                case "book" :
+                                case "book":
                                     list.add(-(index + 1), new Book(id, name, type, authorArtist));
                                     break;
-                                case "magazine" :
+                                case "magazine":
                                     list.add(-(index + 1), new Magazine(id, name, type));
                                     break;
-                                case "dvd" :
+                                case "dvd":
                                     list.add(-(index + 1), new Dvd(id, name, type));
                                     break;
                             }
                         }
-                        //break;
                     }
                     break;
                 case START_OBJECT:
                 case VALUE_FALSE:
                 case VALUE_NULL:
                 case VALUE_TRUE:
-//                    System.out.println(event.toString());
                     break;
                 case KEY_NAME:
-//                    System.out.print(event.toString() + " " + parser.getString() + " - ");
                     keyName = parser.getString();
                     break;
                 case VALUE_STRING:
                 case VALUE_NUMBER:
-//                    System.out.println(event.toString() + " " + parser.getString());
                     value = parser.getString();
                     switch(keyName.toLowerCase()) {
                         case "item_name" :
@@ -143,6 +171,13 @@ public class Library {
         }
         return true;
     }
+
+    /**
+    * search() accepts a String argument for the itemId being
+    * searched for, and integer arguments for lower and upper
+    * bounds of the array. A binary search is used to find and
+    * return the index of the Item in the array.
+     */
 
     private int search(String id, int lwr, int upr) {
         if (list.size() == 0) {
@@ -180,6 +215,10 @@ public class Library {
             return search(id, (((lwr + upr) / 2)) + ((lwr + upr) % 2), upr);
         }
     }
+
+    /**
+    * printLib() prints information about all Items in the Library.
+     */
 
     public void printLib(){
         String temp;
