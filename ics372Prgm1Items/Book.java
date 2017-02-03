@@ -8,15 +8,14 @@ public class Book extends Item {
 
     private String author;
 
-    public Book(String id, String name, String type, String author) {
+    public Book() {
         super();
-        this.id = id;
-        this.name = name;
-        this.type = type;
+    }
+
+    public Book(String id, String name, String type, String author) {
+        super(id, name, type);
         this.author = author;
-        available = true;
         checkOutTime = 21;
-        dateDue = Calendar.getInstance();
     }
 
     public String getAuthor() {

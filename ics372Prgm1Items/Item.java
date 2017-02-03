@@ -3,8 +3,13 @@ package ics372Prgm1Items;
 import java.util.Calendar;
 
 /**
- * Created by Kevin on 1/20/2017.
+* Item class is to be extended by subclasses of each type of Item.
+* It maintains protected attributes common to all types of Items.
+*
+*
+* Created by Kevin on 1/20/2017.
  */
+
 public class Item {
 
     protected String id;
@@ -13,6 +18,17 @@ public class Item {
     protected boolean available;
     protected Calendar dateDue;
     protected int checkOutTime;
+
+    public Item() {
+    }
+
+    public Item(String id, String name, String type){
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        available = true;
+        dateDue = Calendar.getInstance();
+    }
 
     public String getName() {
         return name;
