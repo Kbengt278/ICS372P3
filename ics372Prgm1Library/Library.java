@@ -19,7 +19,6 @@ import java.util.Scanner;
  *
  * Created by Kevin on 1/20/2017.
  */
-
 public class Library {
 
     private ArrayList<Item> list = new ArrayList<>(100);
@@ -35,8 +34,7 @@ public class Library {
     * available, and the Item is returned to the UI where the method
     * is called. If it is not, null is returned to UI where method
     * is called.
-     */
-
+    */
     public Item checkIn(String id) {
         int index = search(id, 0, list.size() - 1);
         if (index < 0)
@@ -57,8 +55,7 @@ public class Library {
     * a Calender object is used in addition to Item's getCheckOutTime
     * to setDateDue(), and the Item is returned to the call from the UI.
     * If the Item is not in the Library, null is returned.
-     */
-
+    */
     public Item checkOut(String id) {
         int index = search(id, 0, list.size() - 1);
         if (index < 0)
@@ -73,14 +70,13 @@ public class Library {
             return list.get(index);
         }
     }
-
+    
     /**
     * addFileData() accepts a file argument. A Scanner object is
     * used to read the file if it exists. If it does not,
     * FileNotFoundException is thrown. A JsonParser object is used
     * to parse the file and add the file's data to the Library.
-     */
-
+    */
     public boolean addFileData(File file){
         String id = new String();
         String type = new String();
@@ -177,8 +173,7 @@ public class Library {
     * searched for, and integer arguments for lower and upper
     * bounds of the array. A binary search is used to find and
     * return the index of the Item in the array.
-     */
-
+    */
     private int search(String id, int lwr, int upr) {
         if (list.size() == 0) {
             return -1;
@@ -218,8 +213,7 @@ public class Library {
 
     /**
     * printLib() prints information about all Items in the Library.
-     */
-
+    */
     public void printLib(){
         String temp;
         for (int i = 0; i < list.size(); i++) {

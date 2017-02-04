@@ -30,8 +30,7 @@ import javafx.stage.FileChooser;
  * LibraryUI class is a simple user interface for the program. It contains a TextField
  * to enter an itemId. It contains a button to add file data, a button to check an
  * item in, and a button to check an item out.
- */
-
+*/
 public class LibraryUI extends Application {
 
     private final TextField itemId = new TextField();
@@ -98,7 +97,6 @@ public class LibraryUI extends Application {
         * message that the item was checked in. If it does not exist, the text
         * area will display a message indicating item does not exist.
         */
-
         btCheckIn.setOnAction(e -> {
             Item item = (lib.checkIn(itemId.getText().trim()));
             if (item == null) {
@@ -118,7 +116,6 @@ public class LibraryUI extends Application {
         * with an item in the library and if the item is checked out.
         * Appropriate messages in the text area are displayed.
         */
-
         btCheckOut.setOnAction(e -> {
             Item item = (lib.checkOut(itemId.getText().trim()));
             if  (item == null) {
@@ -140,7 +137,6 @@ public class LibraryUI extends Application {
         * adds the file information if file is available. Data from a JSON file
         * is added via Library's addFileData method.
         */
-
         btAddFileData.setOnAction(e -> {
             fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
             fileChooser.getExtensionFilters().addAll(
