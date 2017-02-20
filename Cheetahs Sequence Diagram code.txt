@@ -1,0 +1,22 @@
+Commands for  https://www.websequencediagrams.com: 
+
+Customer->LibraryUI:Enter file data
+LibraryUI->Library: addFileData(file)
+Customer->LibraryUI: Enter item ID
+Customer->LibraryUI: Click check out
+LibraryUI->Library:  checkOut(itemID)
+Library->Library: search(itemID) to check that it is a valid item
+Library->Item: set available to false
+Library->Item: set due date
+Library-->LibraryUI: return Item object
+LibraryUI-->Customer: Item checked out successfully, due date is:
+LibraryUI->Item: getDateDue()
+Item-->LibraryUI: return due date
+LibraryUI-->Customer: due date
+Customer->LibraryUI: Enter item ID
+Customer->LibraryUI: Click check in
+LibraryUI->Library:  checkIn(itemID)
+Library->Library: search(itemID) to check that it is a valid item
+Library->Item: set available to true
+Library-->LibraryUI: return Item object
+LibraryUI-->Customer: Item checked in successfully

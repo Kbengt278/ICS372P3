@@ -14,14 +14,9 @@ public class Cd extends Item {
     }
 
     public Cd(String id, String name, String type, String artist) {
-        super();
-        this.id = id;
-        this.name = name;
-        this.type = type;
+        super(id, name, type);
         this.artist = artist;
-        available = true;
         checkOutTime = 7;
-        dateDue = Calendar.getInstance();
     }
 
     public String getArtist() {

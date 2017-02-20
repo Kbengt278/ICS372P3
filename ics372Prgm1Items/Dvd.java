@@ -6,15 +6,12 @@ import java.util.Calendar;
  */
 public class Dvd extends Item {
 
-
-    public Dvd(String id, String name, String type) {
+    public Dvd() {
         super();
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        available = true;
-        checkOutTime = 7;
-        dateDue = Calendar.getInstance();
     }
 
+    public Dvd(String id, String name, String type) {
+        super(id, name, type);
+        checkOutTime = 7;
+    }
 }
