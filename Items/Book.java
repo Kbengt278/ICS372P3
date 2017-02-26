@@ -1,8 +1,7 @@
-package ics372Prgm1Items;
+package Items;
 
-import java.util.Calendar;
 /**
- * Created by Kevin on 1/22/2017.
+ * Class for Book type Items
  */
 public class Book extends Item {
 

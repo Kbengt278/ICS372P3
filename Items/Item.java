@@ -1,22 +1,24 @@
-package ics372Prgm1Items;
+package Items;
 
 import java.util.Calendar;
 
 /**
-* Item class is to be extended by subclasses of each type of Item.
-* It maintains protected attributes common to all types of Items.
-*
-*
-* Created by Kevin on 1/20/2017.
-*/
+ * Item class is to be extended by subclasses of each type of Item.
+ * It maintains protected attributes common to all types of Items.
+ *
+ */
+
 public class Item {
 
     protected String id;
     protected String name;
     protected String type;
-    protected boolean available;
-    protected Calendar dateDue;
-    protected int checkOutTime;
+    protected boolean available;    // Aavilable in the library -- false = checekd out
+    protected Calendar dateDue;     // Due date
+    protected int checkOutTime;     // Number of days that item can be checked out
+    protected int checkedOutBy;     // Library card number of member that has it checcked out
+
+
 
     public Item() {
     }
@@ -27,6 +29,7 @@ public class Item {
         this.type = type;
         this.available = true;
         this.dateDue = Calendar.getInstance();
+        this.checkedOutBy = 0;
     }
 
     public String getName() {
@@ -77,5 +80,15 @@ public class Item {
     public void setCheckOutTime(int checkOutTime) {
         this.checkOutTime = checkOutTime;
     }
+
+
+    public int getCheckedOutBy() {
+        return checkedOutBy;
+    }
+    public void setCheckedOutBy(int checkedOutBy) {
+        this.checkedOutBy = checkedOutBy;
+    }
+
+
 
 }
