@@ -197,50 +197,42 @@ public class Library {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(file);
-//        } catch (ParserConfigurationException e) {
-//
-//        } catch (IOException e) {
-//            return false;
-//        } catch (SAXException e) {
-//            return false;
-//        }
 
-
-            //optional, but recommended
-            //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
             doc.getDocumentElement().normalize();
-
-//            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 
             NodeList nList = doc.getElementsByTagName("Item");
 
-            System.out.println("----------------------------");
-
             for (int temp = 0; temp < nList.getLength(); temp++) {
-
                 Node nNode = nList.item(temp);
-
-                System.out.println("\nCurrent Element :" + nNode.getNodeName());
-
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
                     Element eElement = (Element) nNode;
-
                     id = null;
                     type = null;
                     name = null;
                     author = null;
                     artist = null;
                     volume = null;
-                    id = eElement.getAttribute("id");
-                    type = eElement.getAttribute("type");
-                    name = eElement.getElementsByTagName("Name").item(0).getTextContent();
+                    try {
+                        id = eElement.getAttribute("id");
+                    } catch (NullPointerException e) {}
+                    try {
+                        type = eElement.getAttribute("type");
+                    } catch (NullPointerException e) {}
+                    try {
+                        name = eElement.getElementsByTagName("Name").item(0).getTextContent();
+                    } catch (NullPointerException e) {}
+                    try {
                     if (type.toLowerCase().equals("book"))
                         author = eElement.getElementsByTagName("Author").item(0).getTextContent();
+                    } catch (NullPointerException e) {author = "";}
+                    try {
                     if (type.toLowerCase().equals("cd"))
                         artist = eElement.getElementsByTagName("Artist").item(0).getTextContent();
+                    } catch (NullPointerException e) {artist = "";}
+                    try {
                     if (type.toLowerCase().equals("magazine"))
                         volume = eElement.getElementsByTagName("Volume").item(0).getTextContent();
+                    } catch (NullPointerException e) {volume = "";}
                     if (id != null && name != null && type != null) {
                         switch (type.toLowerCase()) {
                             case "cd":
