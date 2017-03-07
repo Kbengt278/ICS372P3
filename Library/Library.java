@@ -5,11 +5,22 @@ import javax.json.Json;
 import javax.json.stream.JsonParser;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
 
 import Items.*;
 import javafx.scene.control.TextArea;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * Library Class :
@@ -60,12 +71,12 @@ public class Library {
     }
 
     //
-    // addFileData method - reads a JSON file and adds items to current library
+    // addFileDataJson method - reads a JSON file and adds items to current library
     //            detects bad file entries and reports them
     // Input : File file - file to read data from
     // Output : boolean - false if file can't be read
     //
-    public boolean addFileData(File file){
+    public boolean addFileDataJson(File file){
         String id = new String();
         String type = new String();
         String name = new String();
@@ -160,6 +171,108 @@ public class Library {
         }
         return true;
     }
+
+    //
+    // addFileDataXml method - reads a XML file and adds items to current library
+    //            detects bad file entries and reports them
+    // Input : File file - file to read data from
+    // Output : boolean - false if file can't be read
+    //
+    public boolean addFileDataXml(File file) {
+        String id = new String();
+        String type = new String();
+        String name = new String();
+        String author = new String();
+        String artist = new String();
+        String volume = new String();
+        String textLine = "";
+        String keyName = "";
+        String value;
+        int index = 0;
+        boolean startArray = false;
+        Document doc = null;
+
+        try {
+//            File fXmlFile = new File("/Users/mkyong/staff.xml");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            doc = dBuilder.parse(file);
+//        } catch (ParserConfigurationException e) {
+//
+//        } catch (IOException e) {
+//            return false;
+//        } catch (SAXException e) {
+//            return false;
+//        }
+
+
+            //optional, but recommended
+            //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+            doc.getDocumentElement().normalize();
+
+//            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+
+            NodeList nList = doc.getElementsByTagName("Item");
+
+            System.out.println("----------------------------");
+
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+
+                Node nNode = nList.item(temp);
+
+                System.out.println("\nCurrent Element :" + nNode.getNodeName());
+
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                    Element eElement = (Element) nNode;
+
+                    id = null;
+                    type = null;
+                    name = null;
+                    author = null;
+                    artist = null;
+                    volume = null;
+                    id = eElement.getAttribute("id");
+                    type = eElement.getAttribute("type");
+                    name = eElement.getElementsByTagName("Name").item(0).getTextContent();
+                    if (type.toLowerCase().equals("book"))
+                        author = eElement.getElementsByTagName("Author").item(0).getTextContent();
+                    if (type.toLowerCase().equals("cd"))
+                        artist = eElement.getElementsByTagName("Artist").item(0).getTextContent();
+                    if (type.toLowerCase().equals("magazine"))
+                        volume = eElement.getElementsByTagName("Volume").item(0).getTextContent();
+                    if (id != null && name != null && type != null) {
+                        switch (type.toLowerCase()) {
+                            case "cd":
+                                list.put(id, new Cd(id, name, type, artist));
+                                break;
+                            case "book":
+                                list.put(id, new Book(id, name, "Book", author));
+                                break;
+                            case "magazine":
+                                list.put(id, new Magazine(id, name, "Magazine", volume));
+                                break;
+                            case "dvd":
+                                list.put(id, new Dvd(id, name, type));
+                                break;
+                        }
+                    } else {
+                        System.out.println("Invalid entry data: ID = " + id + " , " +
+                                "Type = " + type + "' " + "Name = " + name + "\n");
+                    }
+
+                }
+            }
+        } catch (ParserConfigurationException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        } catch (SAXException e) {
+        return false;
+        }
+        return true;
+    }
+
 
     //
     // displayItems - displays items in the Library catalog

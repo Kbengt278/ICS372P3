@@ -126,6 +126,12 @@ public class LibraryUI extends Application {
         primaryStage.setScene(scene); // Place the scene in the stage
         primaryStage.show(); // Display the stage
 
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JSON", "*.json"),
+                new FileChooser.ExtensionFilter("XML", "*.xml")
+        );
+
         //
         // Process the btCheckIn button -- call the checkIn() method
         //
@@ -151,11 +157,6 @@ public class LibraryUI extends Application {
         // Process the btAddFileData button -- call the addFileData() method
         //
         btAddFileData.setOnAction(e -> {
-            fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("JSON", "*.json"),
-                    new FileChooser.ExtensionFilter("TXT", "*.txt")
-            );
             File file = fileChooser.showOpenDialog(primaryStage);
             if (file != null) {
                 text.appendText("File added: " + file.getAbsolutePath() + "\n");

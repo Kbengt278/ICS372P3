@@ -91,7 +91,11 @@ public class Controller {
     //
     public void addFileData(File file,int library) {
         Library lib = getLib(library);
-        lib.addFileData(file);
+        if (file.getAbsolutePath().toLowerCase().endsWith("json")) {
+            lib.addFileDataJson(file);
+        } else {
+            lib.addFileDataXml(file);
+        }
     }
 
     //
