@@ -1,12 +1,13 @@
 package UI;
 
+import Controller.Controller;
+import Library.Library;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -15,12 +16,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Optional;
-
-import Items.Item;
-import Library.Library;
-import Controller.*;
 
 /**
  * This program will take a .JSON or .xml file of items in a Library, and create a collection
@@ -40,8 +36,13 @@ public class LibraryUI extends Application {
     private Library lib = new Library();
     private Controller app = new Controller();
 
+
+
     @Override // Override the start method in the Controller class
     public void start(Stage primaryStage) throws IOException {
+
+        // Load data from file
+        app = Storage.Storage.loadController();
 
         // Create a border pane
         VBox pane = new VBox();
@@ -85,7 +86,7 @@ public class LibraryUI extends Application {
         Button btAddFileData = new Button("Add File Data");
         btAddFileData.setMaxWidth(Double.MAX_VALUE);
         Button btAddMember = new Button("Add Member");
-        btAddFileData.setMaxWidth(Double.MAX_VALUE);
+        btAddMember.setMaxWidth(Double.MAX_VALUE);
         Button btCheckOut = new Button("Check Out");
         btCheckOut.setMaxWidth(Double.MAX_VALUE);
         Button btCheckIn = new Button("Check In");

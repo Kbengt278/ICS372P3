@@ -1,20 +1,19 @@
 package Controller;
 
-import java.io.*;
+import Items.Item;
+import Library.Library;
+import Member.Member;
+import Member.MemberIdServer;
+import MemberList.MemberList;
+import Storage.Storage;
+import javafx.scene.control.TextArea;
+import javafx.stage.FileChooser;
+
+import java.io.File;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.*;
-
-import Storage.Storage;
-import javafx.scene.control.TextArea;
-
-import Items.Item;
-import Library.Library;
-import MemberList.*;
-import Member.Member;
-import Member.MemberIdServer;
-import javafx.stage.FileChooser;
 
 /**
  * Controller Class :
@@ -31,73 +30,7 @@ public class Controller implements Serializable {
     transient SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
     public Controller(){
-        Storage.load(this);
     }
-
-
-    // All following commented out was attempt to save objects separately with calls to load and save
-    // inside Controller instead of call to Storage
-
-
- /*   private void load(Library m, Library s, MemberList ml){
-        try {
-            FileInputStream file = new FileInputStream("mainData");
-            ObjectInputStream input = new ObjectInputStream(file);
-            m = (Library) input.readObject();
-            input.close();
-            file.close();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
-        } catch (ClassNotFoundException e) {
-        }
-        try {
-            FileInputStream file = new FileInputStream("sisterData");
-            ObjectInputStream input = new ObjectInputStream(file);
-            s = (Library) input.readObject();
-            input.close();
-            file.close();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
-        } catch (ClassNotFoundException e) {
-        }
-        try {
-            FileInputStream file = new FileInputStream("memberData");
-            ObjectInputStream input = new ObjectInputStream(file);
-            ml = (MemberList) input.readObject();
-            input.close();
-            file.close();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
-        } catch (ClassNotFoundException e) {
-        }
-    }
-    private void save(Library m, Library s, MemberList ml) {
-
-        try {
-            FileOutputStream file = new FileOutputStream("mainData");
-            ObjectOutputStream output = new ObjectOutputStream(file);
-            output.writeObject(m);
-            output.close();
-            file.close();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e){}
-        try {
-            FileOutputStream file = new FileOutputStream("sisterData");
-            ObjectOutputStream output = new ObjectOutputStream(file);
-            output.writeObject(s);
-            output.close();
-            file.close();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e){}
-        try {
-            FileOutputStream file = new FileOutputStream("memberData");
-            ObjectOutputStream output = new ObjectOutputStream(file);
-            output.writeObject(ml);
-            output.close();
-            file.close();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e){}
-    }*/
 
     //
     // checkIn method - calls checkIn on the appropriate library and removes item from
@@ -125,7 +58,6 @@ public class Controller implements Serializable {
         }
         Storage.save(this);
     }
-
 
     //
     // checkOut method - calls checkout on the appropriate library and adds item to
@@ -171,6 +103,11 @@ public class Controller implements Serializable {
         Storage.save(this);
     }
 
+    //
+    // addMember method - adds a member to memberList with a library card number
+    // Inputs : String name : name of new member
+    //          TextArea text : text area to write output to
+    //
     public void addMember(String name, TextArea text){
 
         Member member = new Member(name);
@@ -179,8 +116,8 @@ public class Controller implements Serializable {
                 + " created successfully.\nLibrary card number is: "
                 + member.getLibraryCardNum() + ".\n");
         Storage.save(this, MemberIdServer.instance());
-
     }
+
     //
     // displayLibraryItems method - displays items in library catalog by type
     // Inputs : int library : true = main, false = sister

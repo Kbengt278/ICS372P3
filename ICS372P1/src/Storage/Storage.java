@@ -1,37 +1,34 @@
 package Storage;
 
-import Member.MemberIdServer;
 import Controller.Controller;
-import UI.LibraryUI;
-
-import java.io.*;
+import Member.MemberIdServer;
 
 /**
- * Created by matthew on 3/9/2017.
+ * Storage class
  */
 public class Storage {
 
-    private static final String controllerFile = "ControllerData.bin";          // I tried different file types
-    private static final String memberServerFile = "MemberServerData.bin";      // not sure if it matters
+    private static final String controllerFile = "ControllerData.bin";
+    private static final String memberServerFile = "MemberServerData.bin";
 
+    private static Controller app = new Controller();
+    private static MemberIdServer server = MemberIdServer.instance();
 
-
-    public static void load(Controller app){
+    public static Controller loadController() {
         try {
-
-
             FileInputStream file = new FileInputStream(controllerFile);
-
-
             ObjectInputStream input = new ObjectInputStream(file);
             app = (Controller) input.readObject();
             input.close();
             file.close();
-        }catch(FileNotFoundException e){
-        }catch (IOException e){}
-        catch (ClassNotFoundException e){}
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+        } catch (ClassNotFoundException e) {
+        }
+        return app;
+    }
 
-
+    public static MemberIdServer loadServer(){
 
         try{
             FileInputStream serverFile = new FileInputStream(memberServerFile);
@@ -43,7 +40,7 @@ public class Storage {
 
         }catch (IOException e){}
 
-
+        return server;
     };
 
     public static boolean save(Controller contData, MemberIdServer idServer) {
@@ -66,10 +63,7 @@ public class Storage {
             serverOut.close();
             serverFile.close();
         }catch (FileNotFoundException e){
-
         }catch (IOException e){}
-
-
         return true;
     }
 
@@ -85,9 +79,6 @@ public class Storage {
             file.close();
         } catch (FileNotFoundException e) {
         } catch (IOException e){}
-
-
-
         return true;
     }
 }
