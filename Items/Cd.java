@@ -1,11 +1,13 @@
-package ics372Prgm1Items;
+package Items;
 
-import java.util.Calendar;
+
+import java.io.Serializable;
+
 /**
- * Created by Kevin on 1/22/2017.
+ * Class for CD type Items.
  */
-public class Cd extends Item {
-
+public class Cd extends Item implements Serializable{   // added Ser even though
+                                                        // don't think necessary
 
     private String artist;
 

@@ -1,12 +1,13 @@
-package ics372Prgm1Items;
+package Items;
 
-import java.util.Calendar;
+import java.io.Serializable;
+
 /**
- * Created by Kevin on 1/22/2017.
+ * Class for Book type Items
  */
-public class Book extends Item {
-
-    private String author;
+public class Book extends Item implements Serializable{     // added impl Serial
+                                                        // even though I don't think it needs it
+    private String author;                              // since Item implements it
 
     public Book() {
         super();
