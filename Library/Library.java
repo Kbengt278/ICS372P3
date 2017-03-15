@@ -3,10 +3,7 @@ package Library;
 
 import javax.json.Json;
 import javax.json.stream.JsonParser;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.util.*;
 
 import Items.*;
@@ -27,7 +24,7 @@ import org.xml.sax.SAXException;
  * Creates a Library object. Allows items to be added to it via JSON or XML files. Allows items to
  * be checked out and checked in. Allows all items in the library catalog to be displayed by type
  */
-public class Library {
+public class Library implements Serializable{
 
     //    private ArrayList<Item> list = new ArrayList<>(100);
     private HashMap<String, Item> list = new HashMap();

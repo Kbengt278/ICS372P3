@@ -1,23 +1,39 @@
 package Member;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Member Class :
  * Contains a member number (library card number) and a list of checked out items for teh member
  */
-public class Member {
-    // Static member that contains the next available library card number
-    static int nextMemberNum = 1;
+public class Member implements Serializable{
 
+    private String name;
     private int libraryCardNum;
     private ArrayList<String> checkedOutItems = new ArrayList<String>();
 
-    public Member() {
-        libraryCardNum = nextMemberNum;
-        nextMemberNum++;
+    public Member(){};
+
+    public Member(String name){
+        this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getLibraryCardNum() {
+        return libraryCardNum;
+    }
+
+    public void setLibraryCardNum(int libraryCardNum) {
+        this.libraryCardNum = libraryCardNum;
+    }
     //
     // Adds an item to the members checked out list
     //
@@ -39,11 +55,6 @@ public class Member {
         return checkedOutItems;
     }
 
-    //
-    // Returns the next available library card number
-    //
-    public static int getNextMemberNum() {
-        return nextMemberNum;
-    }
+
 
 }

@@ -1,12 +1,23 @@
 package UI;
 
+import Controller.Controller;
+import Library.Library;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -15,13 +26,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-
-import Items.Item;
-import Library.Library;
-import Controller.*;
-
-
+import java.util.Optional;
 
 /**
  * This program will take a .JSON or .xml file of items in a Library, and create a collection
@@ -41,8 +46,13 @@ public class LibraryUI extends Application {
     private Library lib = new Library();
     private Controller app = new Controller();
 
+
+
     @Override // Override the start method in the Controller class
     public void start(Stage primaryStage) throws IOException {
+
+        // Load data from file
+        app = storage.Storage.loadController();
 
         // Create a border pane
         VBox pane = new VBox();
@@ -85,6 +95,8 @@ public class LibraryUI extends Application {
         VBox rightTopPane = new VBox();
         Button btAddFileData = new Button("Add File Data");
         btAddFileData.setMaxWidth(Double.MAX_VALUE);
+        Button btAddMember = new Button("Add Member");
+        btAddMember.setMaxWidth(Double.MAX_VALUE);
         Button btCheckOut = new Button("Check Out");
         btCheckOut.setMaxWidth(Double.MAX_VALUE);
         Button btCheckIn = new Button("Check In");
@@ -93,7 +105,8 @@ public class LibraryUI extends Application {
         btDisplay.setMaxWidth(Double.MAX_VALUE);
         Button btCheckedOut = new Button("User's checked out items");
         btCheckedOut.setMaxWidth(Double.MAX_VALUE);
-        rightTopPane.getChildren().addAll(itemId, cardNumber, btAddFileData, btCheckOut, btCheckIn, btCheckedOut, btDisplay);
+        rightTopPane.getChildren().addAll(itemId, cardNumber, btAddFileData, btAddMember, btCheckOut,
+                btCheckIn, btCheckedOut, btDisplay);
 
         // put the VBoxs in the HBox Top pane
         topPane.getChildren().addAll(leftTopPane, rightTopPane);
@@ -152,6 +165,22 @@ public class LibraryUI extends Application {
         btCheckedOut.setOnAction(e -> {
                 app.displayCheckedOutItems((new Integer(cardNumber.getText()).intValue()), text);
         });
+
+        //
+        // Process the btAddMember button -- call the addMember() method
+        //
+        btAddMember.setOnAction(e -> {
+            TextInputDialog newMember = new TextInputDialog("New Member");
+            newMember.setTitle("New Member");
+            newMember.setContentText("Enter Member Name:");
+
+            Optional<String> result = newMember.showAndWait();
+            if (result.isPresent()){
+                app.addMember(result.get(), text);
+            }
+
+        });
+
 
         //
         // Process the btAddFileData button -- call the addFileData() method

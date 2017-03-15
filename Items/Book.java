@@ -1,11 +1,13 @@
 package Items;
 
+import java.io.Serializable;
+
 /**
  * Class for Book type Items
  */
-public class Book extends Item {
-
-    private String author;
+public class Book extends Item implements Serializable{     // added impl Serial
+                                                        // even though I don't think it needs it
+    private String author;                              // since Item implements it
 
     public Book() {
         super();

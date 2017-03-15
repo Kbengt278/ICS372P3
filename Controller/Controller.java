@@ -1,16 +1,19 @@
 package Controller;
 
+import Items.Item;
+import Library.Library;
+import Member.Member;
+import Member.MemberIdServer;
+import MemberList.MemberList;
+import Storage.Storage;
+import javafx.scene.control.TextArea;
+import javafx.stage.FileChooser;
+
 import java.io.File;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.*;
-import javafx.scene.control.TextArea;
-
-import Items.Item;
-import Library.Library;
-import MemberList.*;
-import javafx.stage.FileChooser;
 
 /**
  * Controller Class :
@@ -19,15 +22,15 @@ import javafx.stage.FileChooser;
  * between the UI and the appropriate objects
  */
 
-public class Controller {
-    private final FileChooser fileChooser = new FileChooser();
+public class Controller implements Serializable {
+    private transient final FileChooser fileChooser = new FileChooser();
     private Library main = new Library();
     private Library sister = new Library();
     private MemberList memberList = new MemberList();
-    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    transient SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
     public Controller(){
-        }
+    }
 
     //
     // checkIn method - calls checkIn on the appropriate library and removes item from
@@ -53,8 +56,8 @@ public class Controller {
                         "checked in successfully\n");
             }
         }
+        Storage.save(this);
     }
-
 
     //
     // checkOut method - calls checkout on the appropriate library and adds item to
@@ -82,6 +85,7 @@ public class Controller {
                         + "/" + item.getDateDue().get(Calendar.YEAR) + "\n");
             }
         }
+        Storage.save(this);
     }
 
     //
@@ -96,6 +100,22 @@ public class Controller {
         } else {
             lib.addFileDataXml(file);
         }
+        Storage.save(this);
+    }
+
+    //
+    // addMember method - adds a member to memberList with a library card number
+    // Inputs : String name : name of new member
+    //          TextArea text : text area to write output to
+    //
+    public void addMember(String name, TextArea text){
+
+        Member member = new Member(name);
+        member.setLibraryCardNum(memberList.addMember(member));
+        text.appendText("New Member: " + member.getName().trim()
+                + " created successfully.\nLibrary card number is: "
+                + member.getLibraryCardNum() + ".\n");
+        Storage.save(this, MemberIdServer.instance());
     }
 
     //
@@ -186,6 +206,5 @@ public class Controller {
             return false;
         }
     }
-
 
 }

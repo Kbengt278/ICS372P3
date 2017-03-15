@@ -1,5 +1,6 @@
 package Items;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Calendar;
  *
  */
 
-public class Item {
+public class Item implements Serializable{
 
     protected String id;
     protected String name;
