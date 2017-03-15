@@ -5,7 +5,7 @@ import Library.Library;
 import Member.Member;
 import Member.MemberIdServer;
 import MemberList.MemberList;
-import Storage.Storage;
+import storage.Storage;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 
