@@ -24,8 +24,11 @@ public class Storage {
             input.close();
             file.close();
         } catch (FileNotFoundException e) {
+
         } catch (IOException e) {
+
         } catch (ClassNotFoundException e) {
+
         }
         return app;
     }
@@ -41,12 +44,10 @@ public class Storage {
         } catch (FileNotFoundException e) {
 
         } catch (IOException e) {
-        }
 
+        }
         return server;
     }
-
-    ;
 
     public static boolean save(Controller contData, MemberIdServer idServer) {
 
@@ -58,7 +59,9 @@ public class Storage {
             output.close();
             file.close();
         } catch (FileNotFoundException e) {
+
         } catch (IOException e) {
+
         }
 
         // Save the MemberIdServer
@@ -69,7 +72,9 @@ public class Storage {
             serverOut.close();
             serverFile.close();
         } catch (FileNotFoundException e) {
+
         } catch (IOException e) {
+
         }
         return true;
     }
@@ -85,7 +90,9 @@ public class Storage {
             output.close();
             file.close();
         } catch (FileNotFoundException e) {
+
         } catch (IOException e) {
+
         }
         return true;
     }

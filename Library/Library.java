@@ -196,15 +196,9 @@ public class Library implements Serializable {
         String author = new String();
         String artist = new String();
         String volume = new String();
-        String textLine = "";
-        String keyName = "";
-        String value;
-        int index = 0;
-        boolean startArray = false;
         Document doc = null;
 
         try {
-//            File fXmlFile = new File("/Users/mkyong/staff.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(file);
@@ -256,7 +250,7 @@ public class Library implements Serializable {
                     if (id != null && name != null && type != null) {
                         switch (type.toLowerCase()) {
                             case "cd":
-                                list.put(id, new Cd(id, name, type, artist));
+                                list.put(id, new Cd(id, name, "CD", artist));
                                 break;
                             case "book":
                                 list.put(id, new Book(id, name, "Book", author));
@@ -265,7 +259,7 @@ public class Library implements Serializable {
                                 list.put(id, new Magazine(id, name, "Magazine", volume));
                                 break;
                             case "dvd":
-                                list.put(id, new Dvd(id, name, type));
+                                list.put(id, new Dvd(id, "DVD", type));
                                 break;
                         }
                     } else {
