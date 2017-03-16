@@ -5,10 +5,12 @@ import java.io.Serializable;
 /**
  * Class for Magazine type Items
  */
-public class Magazine extends Item implements Serializable{     // added Ser even though
-                                                            // don't think necessary
+public class Magazine extends Item implements Serializable {
+    // added Ser even though
+    // don't think necessary
 
     private String volume;
+
     public Magazine() {
         super();
     }

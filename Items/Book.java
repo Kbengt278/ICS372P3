@@ -5,9 +5,11 @@ import java.io.Serializable;
 /**
  * Class for Book type Items
  */
-public class Book extends Item implements Serializable{     // added impl Serial
-                                                        // even though I don't think it needs it
-    private String author;                              // since Item implements it
+public class Book extends Item implements Serializable {
+    // added impl Serial
+    // even though I don't think it needs it
+    // since Item implements it
+    private String author;
 
     public Book() {
         super();

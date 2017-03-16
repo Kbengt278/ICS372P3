@@ -6,8 +6,9 @@ import java.io.Serializable;
 /**
  * Class for CD type Items.
  */
-public class Cd extends Item implements Serializable{   // added Ser even though
-                                                        // don't think necessary
+public class Cd extends Item implements Serializable {
+    // added Ser even though
+    // don't think necessary
 
     private String artist;
 
