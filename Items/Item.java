@@ -13,9 +13,9 @@ public class Item implements Serializable {
     protected String id;
     protected String name;
     protected String type;
-    protected boolean available;    // Aavilable in the library -- false = checekd out
+    protected boolean available;    // Available in the library -- false = checked out
     protected Calendar dateDue;     // Due date
-    protected int checkOutTime;     // Number of days that item can be checked out
+    protected int checkOutTimeDays; // Number of days that item can be checked out
     protected int checkedOutBy;     // Library card number of member that has it checcked out
 
 
@@ -71,14 +71,13 @@ public class Item implements Serializable {
         this.available = available;
     }
 
-    public int getCheckOutTime() {
-        return checkOutTime;
+    public int getCheckOutTimeDays() {
+        return checkOutTimeDays;
     }
 
-    public void setCheckOutTime(int checkOutTime) {
-        this.checkOutTime = checkOutTime;
+    public void setCheckOutTimeDays(int checkOutTimeDays) {
+        this.checkOutTimeDays = checkOutTimeDays;
     }
-
 
     public int getCheckedOutBy() {
         return checkedOutBy;
@@ -87,6 +86,5 @@ public class Item implements Serializable {
     public void setCheckedOutBy(int checkedOutBy) {
         this.checkedOutBy = checkedOutBy;
     }
-
 
 }

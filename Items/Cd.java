@@ -1,6 +1,5 @@
 package Items;
 
-
 import java.io.Serializable;
 
 /**
@@ -19,7 +18,7 @@ public class Cd extends Item implements Serializable {
     public Cd(String id, String name, String type, String artist) {
         super(id, name, type);
         this.artist = artist;
-        checkOutTime = 7;
+        checkOutTimeDays = 7;
     }
 
     public String getArtist() {

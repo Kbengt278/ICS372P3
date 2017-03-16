@@ -18,7 +18,7 @@ public class Book extends Item implements Serializable {
     public Book(String id, String name, String type, String author) {
         super(id, name, type);
         this.author = author;
-        checkOutTime = 21;
+        checkOutTimeDays = 21;
     }
 
     public String getAuthor() {

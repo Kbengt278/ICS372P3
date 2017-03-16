@@ -15,6 +15,6 @@ public class Dvd extends Item implements Serializable {
 
     public Dvd(String id, String name, String type) {
         super(id, name, type);
-        checkOutTime = 7;
+        checkOutTimeDays = 7;
     }
 }

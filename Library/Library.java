@@ -24,47 +24,60 @@ import java.util.*;
  */
 public class Library implements Serializable {
 
-    //    private ArrayList<Item> list = new ArrayList<>(100);
-    private HashMap<String, Item> list = new HashMap();
+    private HashMap<String, Item> list = new HashMap<>();
 
     public Library() {
     }
 
     /**
-     * Sets items available flag true, clears items checkeOutBy field
+     * Sets item's available flag true, clears items checkedOutBy field
      *
      * @param cardNumber Library card number of member
      * @param itemId     Item ID to be checked in
      * @return Item - Object to be checked in. Null if item doesn't exist
      */
-    public Item checkIn(int cardNumber, String itemId) {
+    public Item checkIn(int cardNumber, String itemId, TextArea text) {
         Item item = list.get(itemId);
-        if (item != null) {
+        if (item == null) {
+            text.appendText("Item " + itemId.trim() + " does not exist\n");
+            return null;
+        } else if (item.isAvailable()) {
+            text.appendText("Item " + itemId + " is not checked out.\n");
+            return null;
+        } else if (item.getCheckedOutBy() != cardNumber) {
+            text.appendText("Item " + itemId + " is was not checked out by library card number " + cardNumber + ".\n");
+            return null;
+        } else {
             item.setAvailable(true);
             item.setCheckedOutBy(0);
+            return item;
         }
-        return item;
     }
 
     /**
-     * Sets items available flag false, sets checkedOutBy to cardNumber,
-     * sets items DateDue to approprate due date
+     * Sets item's available flag false, sets checkedOutBy to cardNumber,
+     * Sets item's DateDue to appropriate due date
      *
      * @param cardNumber Library card number of member
      * @param itemId     Item ID to be checked out
      * @return Item - Object to be checked out. Null if item doesn't exist or is unavailable
      */
-    public Item checkOut(int cardNumber, String itemId) {
+    public Item checkOut(int cardNumber, String itemId, TextArea text) {
         Item item = list.get(itemId);
-        if (item == null || !item.isAvailable())
+        if (item == null) {
+            text.appendText("Item " + itemId + " does not exist.\n");
             return null;
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTime());
-        item.setAvailable(false);
-        item.setDateDue(cal);
-        item.setCheckedOutBy(cardNumber);
-        return item;
-
+        } else if (!item.isAvailable()) {
+            text.appendText("Item " + itemId + " is already checked out.\n");
+            return null;
+        } else {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
+            item.setAvailable(false);
+            item.setDateDue(cal);
+            item.setCheckedOutBy(cardNumber);
+            return item;
+        }
     }
 
     /**

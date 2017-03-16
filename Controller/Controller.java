@@ -45,12 +45,10 @@ public class Controller implements Serializable {
         if (checkLibraryCardNumber(cardNumber, text)) {
             Library lib = getLib(library);
 
-            Item item = (lib.checkIn(cardNumber, itemId.trim()));
-            if (item == null) {
-                text.appendText("Item " + itemId.trim() + " does not exist\n");
-            } else {
-
+            Item item = (lib.checkIn(cardNumber, itemId.trim(), text));
+            if (item != null) {
                 memberList.getMember(cardNumber).removeItem(itemId);
+
                 text.appendText("Item " + itemId.trim() + " "
                         + item.getType() + " : "
                         + item.getName() + "\n" +
@@ -73,18 +71,17 @@ public class Controller implements Serializable {
         if (checkLibraryCardNumber(cardNumber, text)) {
             Library lib = getLib(library);
 
-            Item item = (lib.checkOut(cardNumber, itemId.trim()));
-            if (item == null) {
-                text.appendText("Item " + itemId + " is not available\n");
-            } else {
+            Item item = (lib.checkOut(cardNumber, itemId.trim(), text));
+            if (item != null) {
                 memberList.getMember(cardNumber).addItem(itemId);
+
                 text.appendText("Item " + itemId + " "
                         + item.getType() + " : "
                         + item.getName() + "\n"
                         + "checked out successfully. Due date is "
                         + (item.getDateDue().get(Calendar.MONTH) + 1)
                         + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
-                        + "/" + item.getDateDue().get(Calendar.YEAR) + "\n");
+                        + "/" + item.getDateDue().get(Calendar.YEAR) + ".\n");
             }
         }
         Storage.save(this);

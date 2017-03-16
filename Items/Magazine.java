@@ -18,12 +18,12 @@ public class Magazine extends Item implements Serializable {
     public Magazine(String id, String name, String type, String volume) {
         super(id, name, type);
         this.volume = volume;
-        checkOutTime = 7;
+        checkOutTimeDays = 7;
     }
 
     public Magazine(String id, String name, String type) {
         super(id, name, type);
         this.volume = "";
-        checkOutTime = 7;
+        checkOutTimeDays = 7;
     }
 }

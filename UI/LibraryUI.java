@@ -76,6 +76,10 @@ public class LibraryUI extends Application {
         CheckBox cbCDs = new CheckBox("CDs");
         CheckBox cbDVDs = new CheckBox("DVDs");
         CheckBox cbMagazines = new CheckBox("Magazines");
+        cbBooks.setSelected(true);
+        cbCDs.setSelected(true);
+        cbDVDs.setSelected(true);
+        cbMagazines.setSelected(true);
         cbBooks.setMinWidth(100);
         cbCDs.setMinWidth(100);
         cbDVDs.setMinWidth(100);
@@ -117,10 +121,8 @@ public class LibraryUI extends Application {
         textPane.setMinHeight(580);
         text.setScrollTop(Double.MAX_VALUE);
 
-
         // Place nodes in the pane
         pane.getChildren().addAll(topPane, itemsPane, textPane);
-
 
         //
         // Create a scene and place it in the stage
@@ -141,21 +143,33 @@ public class LibraryUI extends Application {
         // Process the btCheckIn button -- call the checkIn() method
         //
         btCheckIn.setOnAction(e -> {
-            app.checkIn((new Integer(cardNumber.getText()).intValue()), itemId.getText().trim(), library, text);
+            try {
+                app.checkIn((Integer.parseInt(cardNumber.getText())), itemId.getText().trim(), library, text);
+            } catch (NumberFormatException ex) {
+                text.appendText("Incorrect card number format\n");
+            }
         });
 
         //
         // Process the btCheckOut button -- call the checkOut() method
         //
         btCheckOut.setOnAction(e -> {
-            app.checkOut((new Integer(cardNumber.getText()).intValue()), itemId.getText().trim(), library, text);
+            try {
+                app.checkOut((Integer.parseInt(cardNumber.getText())), itemId.getText().trim(), library, text);
+            } catch (NumberFormatException ex) {
+                text.appendText("Incorrect card number format\n");
+            }
         });
 
         //
         // Process the btCheckedOut button -- call the displayCheckedOutItems() method
         //
         btCheckedOut.setOnAction(e -> {
-            app.displayCheckedOutItems((new Integer(cardNumber.getText()).intValue()), text);
+            try {
+                app.displayCheckedOutItems((Integer.parseInt(cardNumber.getText())), text);
+            } catch (NumberFormatException ex) {
+                text.appendText("Incorrect card number format\n");
+            }
         });
 
         //
@@ -170,9 +184,7 @@ public class LibraryUI extends Application {
             if (result.isPresent()) {
                 app.addMember(result.get(), text);
             }
-
         });
-
 
         //
         // Process the btAddFileData button -- call the addFileData() method
@@ -180,8 +192,8 @@ public class LibraryUI extends Application {
         btAddFileData.setOnAction(e -> {
             File file = fileChooser.showOpenDialog(primaryStage);
             if (file != null) {
-                text.appendText("File added: " + file.getAbsolutePath() + "\n");
                 app.addFileData(file, library);
+                text.appendText("File added: " + file.getAbsolutePath() + "\n");
             } else {
                 text.appendText("No file added." + "\n");
             }
