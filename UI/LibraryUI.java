@@ -116,9 +116,10 @@ public class LibraryUI extends Application {
         textPane.getChildren().add(scrollPane);
         scrollPane.setContent(text);
         scrollPane.setFitToHeight(true);
-        HBox.setHgrow(textPane, Priority.ALWAYS);
+        scrollPane.setFitToWidth(true);
+        HBox.setHgrow(scrollPane, Priority.ALWAYS);
         textPane.setMaxHeight(Double.MAX_VALUE);
-        textPane.setMinHeight(580);
+        textPane.setPrefHeight(400);
         text.setScrollTop(Double.MAX_VALUE);
 
         // Place nodes in the pane
