@@ -8,16 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -32,7 +23,6 @@ import java.util.Optional;
  * This program will take a .JSON or .xml file of items in a Library, and create a collection
  * of the items. Then it will allow items to be checked out and checked back in.
  * The 4 types of items are : CD, DVD, book, and magazine.
- *
  */
 
 public class LibraryUI extends Application {
@@ -46,7 +36,9 @@ public class LibraryUI extends Application {
     private Library lib = new Library();
     private Controller app = new Controller();
 
-
+    public static void main(String[] args) {
+        Application.launch(args);
+    }
 
     @Override // Override the start method in the Controller class
     public void start(Stage primaryStage) throws IOException {
@@ -84,6 +76,10 @@ public class LibraryUI extends Application {
         CheckBox cbCDs = new CheckBox("CDs");
         CheckBox cbDVDs = new CheckBox("DVDs");
         CheckBox cbMagazines = new CheckBox("Magazines");
+        cbBooks.setSelected(true);
+        cbCDs.setSelected(true);
+        cbDVDs.setSelected(true);
+        cbMagazines.setSelected(true);
         cbBooks.setMinWidth(100);
         cbCDs.setMinWidth(100);
         cbDVDs.setMinWidth(100);
@@ -120,15 +116,14 @@ public class LibraryUI extends Application {
         textPane.getChildren().add(scrollPane);
         scrollPane.setContent(text);
         scrollPane.setFitToHeight(true);
-        HBox.setHgrow(textPane, Priority.ALWAYS);
+        scrollPane.setFitToWidth(true);
+        HBox.setHgrow(scrollPane, Priority.ALWAYS);
         textPane.setMaxHeight(Double.MAX_VALUE);
-        textPane.setMinHeight(580);
+        textPane.setPrefHeight(400);
         text.setScrollTop(Double.MAX_VALUE);
-
 
         // Place nodes in the pane
         pane.getChildren().addAll(topPane, itemsPane, textPane);
-
 
         //
         // Create a scene and place it in the stage
@@ -149,21 +144,33 @@ public class LibraryUI extends Application {
         // Process the btCheckIn button -- call the checkIn() method
         //
         btCheckIn.setOnAction(e -> {
-                app.checkIn((new Integer(cardNumber.getText()).intValue()), itemId.getText().trim(), library, text);
+            try {
+                app.checkIn((Integer.parseInt(cardNumber.getText())), itemId.getText().trim(), library, text);
+            } catch (NumberFormatException ex) {
+                text.appendText("Incorrect card number format\n");
+            }
         });
 
         //
         // Process the btCheckOut button -- call the checkOut() method
         //
         btCheckOut.setOnAction(e -> {
-                app.checkOut((new Integer(cardNumber.getText()).intValue()), itemId.getText().trim(), library, text);
+            try {
+                app.checkOut((Integer.parseInt(cardNumber.getText())), itemId.getText().trim(), library, text);
+            } catch (NumberFormatException ex) {
+                text.appendText("Incorrect card number format\n");
+            }
         });
 
         //
         // Process the btCheckedOut button -- call the displayCheckedOutItems() method
         //
         btCheckedOut.setOnAction(e -> {
-                app.displayCheckedOutItems((new Integer(cardNumber.getText()).intValue()), text);
+            try {
+                app.displayCheckedOutItems((Integer.parseInt(cardNumber.getText())), text);
+            } catch (NumberFormatException ex) {
+                text.appendText("Incorrect card number format\n");
+            }
         });
 
         //
@@ -175,12 +182,10 @@ public class LibraryUI extends Application {
             newMember.setContentText("Enter Member Name:");
 
             Optional<String> result = newMember.showAndWait();
-            if (result.isPresent()){
+            if (result.isPresent()) {
                 app.addMember(result.get(), text);
             }
-
         });
-
 
         //
         // Process the btAddFileData button -- call the addFileData() method
@@ -188,8 +193,8 @@ public class LibraryUI extends Application {
         btAddFileData.setOnAction(e -> {
             File file = fileChooser.showOpenDialog(primaryStage);
             if (file != null) {
-                text.appendText("File added: " + file.getAbsolutePath() + "\n");
                 app.addFileData(file, library);
+                text.appendText("File added: " + file.getAbsolutePath() + "\n");
             } else {
                 text.appendText("No file added." + "\n");
             }
@@ -201,16 +206,16 @@ public class LibraryUI extends Application {
         btDisplay.setOnAction(e -> {
             text.clear();
             int mask = 0;
-            if (cbBooks.isSelected()){
+            if (cbBooks.isSelected()) {
                 mask += 1;
             }
-            if (cbCDs.isSelected()){
+            if (cbCDs.isSelected()) {
                 mask += 2;
             }
-            if (cbDVDs.isSelected()){
+            if (cbDVDs.isSelected()) {
                 mask += 4;
             }
-            if (cbMagazines.isSelected()){
+            if (cbMagazines.isSelected()) {
                 mask += 8;
             }
             app.displayLibraryItems(library, text, mask);
@@ -220,10 +225,10 @@ public class LibraryUI extends Application {
         // Handles getting the set Library radio button and setting
         // the variable appropriately
         //
-        libraries.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
+        libraries.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             public void changed(ObservableValue<? extends Toggle> ov,
                                 Toggle old_toggle, Toggle new_toggle) {
-                if (rbMain.isSelected()){
+                if (rbMain.isSelected()) {
                     library = 1;
                 } else {
                     library = 2;
@@ -236,9 +241,4 @@ public class LibraryUI extends Application {
             }
         });
     }
-
-    public static void main(String[] args) {
-        Application.launch(args);
-    }
-
 }

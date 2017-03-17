@@ -9,30 +9,31 @@ import java.io.Serializable;
  */
 public class MemberIdServer implements Serializable {
 
-    private int idCounter = 1;              // New server starts at 1
     private transient static MemberIdServer server;
+    private int idCounter = 1;              // New server starts at 1
 
     // Singleton
-    private MemberIdServer(){}
+    private MemberIdServer() {
+    }
 
-    public static MemberIdServer instance(){
+    public static MemberIdServer instance() {
         if (server == null) {
             return (server = new MemberIdServer());
-        }
-        else {
+        } else {
             return server;
         }
     }
 
-    public int getId(){
-        return idCounter++;
-    }
-
-    public static void retrieve(ObjectInputStream in){
+    public static void retrieve(ObjectInputStream in) {
         try {
             server = (MemberIdServer) in.readObject();
-        }catch (ClassNotFoundException e){
+        } catch (ClassNotFoundException e) {
 
-        }catch(IOException e){}
+        } catch (IOException e) {
+        }
+    }
+
+    public int getId() {
+        return idCounter++;
     }
 }

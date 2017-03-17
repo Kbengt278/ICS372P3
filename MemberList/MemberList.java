@@ -1,6 +1,7 @@
 package MemberList;
 
-import Member.*;
+import Member.Member;
+import Member.MemberIdServer;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -9,17 +10,18 @@ import java.util.HashMap;
  * MemberList Class
  * Creates an initial list of member objects
  */
-public class MemberList implements Serializable{
+public class MemberList implements Serializable {
     private HashMap<Integer, Member> memberList = new HashMap<Integer, Member>();
     private MemberIdServer iDserver = MemberIdServer.instance();
 
-    public MemberList(){};
-
-    public Member getMember(int id){
-        return memberList.get((Integer)id);
+    public MemberList() {
     }
 
-    public int getNumberMembers(){
+    public Member getMember(int id) {
+        return memberList.get((Integer) id);
+    }
+
+    public int getNumberMembers() {
         return memberList.size();
     }
 

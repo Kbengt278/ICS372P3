@@ -1,14 +1,9 @@
 package storage;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import Controller.Controller;
 import Member.MemberIdServer;
+
+import java.io.*;
 
 /**
  * Storage class
@@ -29,26 +24,30 @@ public class Storage {
             input.close();
             file.close();
         } catch (FileNotFoundException e) {
+
         } catch (IOException e) {
+
         } catch (ClassNotFoundException e) {
+
         }
         return app;
     }
 
-    public static MemberIdServer loadServer(){
+    public static MemberIdServer loadServer() {
 
-        try{
+        try {
             FileInputStream serverFile = new FileInputStream(memberServerFile);
             ObjectInputStream serverInput = new ObjectInputStream(serverFile);
             MemberIdServer.retrieve(serverInput);
             serverInput.close();
             serverFile.close();
-        }catch(FileNotFoundException e){
+        } catch (FileNotFoundException e) {
 
-        }catch (IOException e){}
+        } catch (IOException e) {
 
+        }
         return server;
-    };
+    }
 
     public static boolean save(Controller contData, MemberIdServer idServer) {
 
@@ -60,7 +59,10 @@ public class Storage {
             output.close();
             file.close();
         } catch (FileNotFoundException e) {
-        } catch (IOException e){}
+
+        } catch (IOException e) {
+
+        }
 
         // Save the MemberIdServer
         try {
@@ -69,8 +71,11 @@ public class Storage {
             serverOut.writeObject(idServer);
             serverOut.close();
             serverFile.close();
-        }catch (FileNotFoundException e){
-        }catch (IOException e){}
+        } catch (FileNotFoundException e) {
+
+        } catch (IOException e) {
+
+        }
         return true;
     }
 
@@ -85,7 +90,10 @@ public class Storage {
             output.close();
             file.close();
         } catch (FileNotFoundException e) {
-        } catch (IOException e){}
+
+        } catch (IOException e) {
+
+        }
         return true;
     }
 }

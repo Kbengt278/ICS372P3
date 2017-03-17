@@ -1,79 +1,93 @@
 package Library;
 
 
-import javax.json.Json;
-import javax.json.stream.JsonParser;
-import java.io.*;
-import java.util.*;
-
 import Items.*;
 import javafx.scene.control.TextArea;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import javax.json.Json;
+import javax.json.stream.JsonParser;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.*;
+import java.util.*;
 
 /**
  * Library Class :
  * Creates a Library object. Allows items to be added to it via JSON or XML files. Allows items to
  * be checked out and checked in. Allows all items in the library catalog to be displayed by type
  */
-public class Library implements Serializable{
+public class Library implements Serializable {
 
-    //    private ArrayList<Item> list = new ArrayList<>(100);
-    private HashMap<String, Item> list = new HashMap();
+    private HashMap<String, Item> list = new HashMap<>();
 
     public Library() {
     }
 
-    //
-    // checkIn method -- sets items available flag true, clears items checkeOutBy field
-    // Inputs : int cardNumber - Library card number of member
-    //          String itemId - item ID to be checked in
-    // Output : Item - object to be checked in. null if item doesn't exist
-    //
-    public Item checkIn(int cardNumber, String itemId) {
+    /**
+     * Sets item's available flag true, clears items checkedOutBy field
+     *
+     * @param cardNumber Library card number of member
+     * @param itemId     Item ID to be checked in
+     * @return Item - Object to be checked in. Null if item doesn't exist
+     */
+    public Item checkIn(int cardNumber, String itemId, TextArea text) {
         Item item = list.get(itemId);
-        if (item != null) {
+        if (item == null) {
+            text.appendText("Item " + itemId.trim() + " does not exist\n");
+            return null;
+        } else if (item.isAvailable()) {
+            text.appendText("Item " + itemId + " is not checked out.\n");
+            return null;
+        } else if (item.getCheckedOutBy() != cardNumber) {
+            text.appendText("Item " + itemId + " is was not checked out by library card number " + cardNumber + ".\n");
+            return null;
+        } else {
             item.setAvailable(true);
             item.setCheckedOutBy(0);
+            return item;
         }
-        return item;
     }
 
-    //
-    // checkOut method -- sets items available flag false, sets checkedOutBy to cardNumber,
-    //                  sets items DateDue to approprate due date
-    // Inputs : int cardNumber - Library card number of member
-    //          String itemId - item ID to be checked out
-    // Output : Item - object to be checked out. null if item doesn't exist or is unavailable
-    //
-    public Item checkOut(int cardNumber, String itemId) {
+    /**
+     * Sets item's available flag false, sets checkedOutBy to cardNumber,
+     * Sets item's DateDue to appropriate due date
+     *
+     * @param cardNumber Library card number of member
+     * @param itemId     Item ID to be checked out
+     * @return Item - Object to be checked out. Null if item doesn't exist or is unavailable
+     */
+    public Item checkOut(int cardNumber, String itemId, TextArea text) {
         Item item = list.get(itemId);
-        if (item == null || !item.isAvailable())
+        if (item == null) {
+            text.appendText("Item " + itemId + " does not exist.\n");
             return null;
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTime());
-        item.setAvailable(false);
-        item.setDateDue(cal);
-        item.setCheckedOutBy(cardNumber);
-        return item;
-
+        } else if (!item.isAvailable()) {
+            text.appendText("Item " + itemId + " is already checked out.\n");
+            return null;
+        } else {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
+            item.setAvailable(false);
+            item.setDateDue(cal);
+            item.setCheckedOutBy(cardNumber);
+            return item;
+        }
     }
 
-    //
-    // addFileDataJson method - reads a JSON file and adds items to current library
-    //            detects bad file entries and reports them
-    // Input : File file - file to read data from
-    // Output : boolean - false if file can't be read
-    //
-    public boolean addFileDataJson(File file){
+    /**
+     * Reads a JSON file and adds items to current library.
+     * Detects bad file entries and reports them.
+     *
+     * @param file File to read data from.
+     * @return boolean False if file can't be read.
+     */
+    public boolean addFileDataJson(File file) {
         String id = new String();
         String type = new String();
         String name = new String();
@@ -95,8 +109,7 @@ public class Library implements Serializable{
             while (input.hasNext()) {
                 textLine = textLine + input.nextLine() + "\n";
             }
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             System.out.println("Couldn't find file");
         }
         input.close();
@@ -104,7 +117,7 @@ public class Library implements Serializable{
         JsonParser parser = Json.createParser(new StringReader(textLine));
         while (parser.hasNext()) {
             JsonParser.Event event = parser.next();
-            switch(event) {
+            switch (event) {
                 case START_ARRAY:
                     startArray = true;
                     break;
@@ -130,7 +143,7 @@ public class Library implements Serializable{
                             }
                         } else {
                             System.out.println("Invalid entry data: ID = " + id + " , " +
-                                "Type = " + type + "' " + "Name = " + name + "\n");
+                                    "Type = " + type + "' " + "Name = " + name + "\n");
                         }
                     }
                     break;
@@ -148,18 +161,18 @@ public class Library implements Serializable{
                 case VALUE_STRING:
                 case VALUE_NUMBER:
                     value = parser.getString();
-                    switch(keyName.toLowerCase()) {
-                        case "item_name" :
+                    switch (keyName.toLowerCase()) {
+                        case "item_name":
                             name = value;
                             break;
-                        case "item_type" :
+                        case "item_type":
                             type = value;
                             break;
-                        case "item_id" :
+                        case "item_id":
                             id = value;
                             break;
-                        case "item_artist" :
-                        case "item_author" :
+                        case "item_artist":
+                        case "item_author":
                             authorArtist = value;
                             break;
                     }
@@ -169,12 +182,13 @@ public class Library implements Serializable{
         return true;
     }
 
-    //
-    // addFileDataXml method - reads a XML file and adds items to current library
-    //            detects bad file entries and reports them
-    // Input : File file - file to read data from
-    // Output : boolean - false if file can't be read
-    //
+    /**
+     * Reads a XML file and adds items to current library
+     * Detects bad file entries and reports them
+     *
+     * @param file File to read data from
+     * @return boolean False if file can't be read
+     */
     public boolean addFileDataXml(File file) {
         String id = new String();
         String type = new String();
@@ -182,15 +196,9 @@ public class Library implements Serializable{
         String author = new String();
         String artist = new String();
         String volume = new String();
-        String textLine = "";
-        String keyName = "";
-        String value;
-        int index = 0;
-        boolean startArray = false;
         Document doc = null;
 
         try {
-//            File fXmlFile = new File("/Users/mkyong/staff.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(file);
@@ -211,29 +219,38 @@ public class Library implements Serializable{
                     volume = null;
                     try {
                         id = eElement.getAttribute("id");
-                    } catch (NullPointerException e) {}
+                    } catch (NullPointerException e) {
+                    }
                     try {
                         type = eElement.getAttribute("type");
-                    } catch (NullPointerException e) {}
+                    } catch (NullPointerException e) {
+                    }
                     try {
                         name = eElement.getElementsByTagName("Name").item(0).getTextContent();
-                    } catch (NullPointerException e) {}
+                    } catch (NullPointerException e) {
+                    }
                     try {
-                    if (type.toLowerCase().equals("book"))
-                        author = eElement.getElementsByTagName("Author").item(0).getTextContent();
-                    } catch (NullPointerException e) {author = "";}
+                        if (type.toLowerCase().equals("book"))
+                            author = eElement.getElementsByTagName("Author").item(0).getTextContent();
+                    } catch (NullPointerException e) {
+                        author = "";
+                    }
                     try {
-                    if (type.toLowerCase().equals("cd"))
-                        artist = eElement.getElementsByTagName("Artist").item(0).getTextContent();
-                    } catch (NullPointerException e) {artist = "";}
+                        if (type.toLowerCase().equals("cd"))
+                            artist = eElement.getElementsByTagName("Artist").item(0).getTextContent();
+                    } catch (NullPointerException e) {
+                        artist = "";
+                    }
                     try {
-                    if (type.toLowerCase().equals("magazine"))
-                        volume = eElement.getElementsByTagName("Volume").item(0).getTextContent();
-                    } catch (NullPointerException e) {volume = "";}
+                        if (type.toLowerCase().equals("magazine"))
+                            volume = eElement.getElementsByTagName("Volume").item(0).getTextContent();
+                    } catch (NullPointerException e) {
+                        volume = "";
+                    }
                     if (id != null && name != null && type != null) {
                         switch (type.toLowerCase()) {
                             case "cd":
-                                list.put(id, new Cd(id, name, type, artist));
+                                list.put(id, new Cd(id, name, "CD", artist));
                                 break;
                             case "book":
                                 list.put(id, new Book(id, name, "Book", author));
@@ -242,7 +259,7 @@ public class Library implements Serializable{
                                 list.put(id, new Magazine(id, name, "Magazine", volume));
                                 break;
                             case "dvd":
-                                list.put(id, new Dvd(id, name, type));
+                                list.put(id, new Dvd(id, "DVD", type));
                                 break;
                         }
                     } else {
@@ -257,24 +274,24 @@ public class Library implements Serializable{
         } catch (IOException e) {
             return false;
         } catch (SAXException e) {
-        return false;
+            return false;
         }
         return true;
     }
 
-
-    //
-    // displayItems - displays items in the Library catalog
-    // Inputs : String type : the type of items to display (e.g book, cd,dvd)
-    //          TextArea text - text area to write output to
-    //
-    public void displayItems(String type, TextArea text){
+    /**
+     * Displays items in the Library catalog
+     *
+     * @param type The type of items to display (e.g book, cd, dvd)
+     * @param text Text area to write output to
+     */
+    public void displayItems(String type, TextArea text) {
         Set set = list.entrySet();
         Iterator i = set.iterator();
         // Display elements
-        while(i.hasNext()) {
-            Map.Entry temp = (Map.Entry)i.next();
-            Item item = (Item)temp.getValue();
+        while (i.hasNext()) {
+            Map.Entry temp = (Map.Entry) i.next();
+            Item item = (Item) temp.getValue();
             if (type.compareToIgnoreCase(item.getType()) == 0) {
                 text.appendText("Id = " + item.getId());
                 text.appendText(" " + item.getType() + " ");
@@ -288,12 +305,13 @@ public class Library implements Serializable{
 
     }
 
-    //
-    // getItem method - returns the Item object pointed to by id
-    // Input : String id - item id of object
-    // Output : Item object
-    //
-    public Item getItem(String id){
+    /**
+     * Returns the Item object pointed to by id
+     *
+     * @param id Item id of object
+     * @return Item object
+     */
+    public Item getItem(String id) {
         return list.get(id);
     }
 }
