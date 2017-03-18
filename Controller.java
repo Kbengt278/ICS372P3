@@ -1,0 +1,210 @@
+package Controller;
+
+import Items.Item;
+import Library.Library;
+import Member.Member;
+import Member.MemberIdServer;
+import MemberList.MemberList;
+import storage.Storage;
+import javafx.scene.control.TextArea;
+import javafx.stage.FileChooser;
+
+import java.io.File;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+/**
+ * Controller Class :
+ * Creates Library objects and MemberList object. Handles checkIn, checkOut,
+ * displayLibraryItems, addFileData, and displayCheckedOutItems functionality
+ * between the UI and the appropriate objects
+ */
+
+public class Controller implements Serializable {
+    private transient final FileChooser fileChooser = new FileChooser();
+    private Library main = new Library();
+    private Library sister = new Library();
+    private MemberList memberList = new MemberList();
+    transient SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+    public Controller(){
+    }
+
+    //
+    // checkIn method - calls checkIn on the appropriate library and removes item from
+    //      members checkedOut list
+    // Inputs : int cardNumber : members id number
+    //          String itemId : id of item to check out
+    //          int library : library to check item into
+    //          TextArea text : text area to write results to
+    //
+    public void checkIn(int cardNumber, String itemId, int library, TextArea text) {
+        if (checkLibraryCardNumber(cardNumber)) {
+            Library lib = getLib(library);
+
+            Item item = (lib.checkIn(cardNumber, itemId.trim()));
+            if (item == null) {
+                text.appendText("Item " + itemId.trim() + " does not exist\n");
+            } else {
+
+                memberList.getMember(cardNumber).removeItem(itemId);
+                text.appendText("Item " + itemId.trim() + " "
+                        + item.getType() + " : "
+                        + item.getName() + "\n" +
+                        "checked in successfully\n");
+            }
+        } else {
+            text.appendText("Library Card Number " + cardNumber + " is Invalid\n");
+        }
+
+        Storage.save(this);
+    }
+
+    //
+    // checkOut method - calls checkout on the appropriate library and adds item to
+    //      members checkedOut list
+    // Inputs : int cardNumber : members id number
+    //          String itemId : id of item to check out
+    //          int library : library to check item out of
+    //          TextArea text : text area to write results to
+    //
+    public void checkOut(int cardNumber, String itemId, int library, TextArea text) {
+        if (checkLibraryCardNumber(cardNumber)) {
+            Library lib = getLib(library);
+
+            Item item = (lib.checkOut(cardNumber, itemId.trim()));
+            if (item == null) {
+                text.appendText("Item " + itemId + " is not available\n");
+            } else {
+                memberList.getMember(cardNumber).addItem(itemId);
+                text.appendText("Item " + itemId + " "
+                        + item.getType() + " : "
+                        + item.getName() + "\n"
+                        + "checked out successfully. Due date is "
+                        + (item.getDateDue().get(Calendar.MONTH) + 1)
+                        + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
+                        + "/" + item.getDateDue().get(Calendar.YEAR) + "\n");
+            }
+        } else {
+            text.appendText("Library Card Number " + cardNumber + " is Invalid\n");
+        }
+        Storage.save(this);
+    }
+
+    //
+    // addFileData method - adds items from input file to appropriate library
+    // Inputs : File file : file to read data from
+    //          int library : true = main, false = sister
+    //
+    public void addFileData(File file,int library) {
+        Library lib = getLib(library);
+        if (file.getAbsolutePath().toLowerCase().endsWith("json")) {
+            lib.addFileDataJson(file);
+        } else {
+            lib.addFileDataXml(file);
+        }
+        Storage.save(this);
+    }
+
+    //
+    // addMember method - adds a member to memberList with a library card number
+    // Inputs : String name : name of new member
+    //          TextArea text : text area to write output to
+    //
+    public void addMember(String name, TextArea text){
+
+        Member member = new Member(name);
+        member.setLibraryCardNum(memberList.addMember(member));
+        text.appendText("New Member: " + member.getName().trim()
+                + " created successfully.\nLibrary card number is: "
+                + member.getLibraryCardNum() + ".\n");
+        Storage.save(this, MemberIdServer.instance());
+    }
+
+
+    //
+    // displayLibraryItems method - displays items in library catalog by type
+    // Inputs : int library : true = main, false = sister
+    //          int mask : mask of types to display 1 = book, 2 = cd, 4 = dvd, 8 = magazine
+    //
+    public String  displayLibraryItems(int library, int mask){
+        String text = "";
+        Library lib = getLib(library);
+        if ((mask & 1) == 1){
+            text += lib.displayItems("Book");
+        }
+        if ((mask & 2) == 2){
+            text += lib.displayItems("CD");
+        }
+        if ((mask & 4) == 4){
+            text += lib.displayItems("DVD");
+        }
+        if ((mask & 8) == 8){
+            text += lib.displayItems("Magazine");
+        }
+        return text;
+    }
+
+    //
+    // displayCheckedOutItems method - Gets the checked out items for this member
+    // Inputs : int libraryCardNum : memebers id number
+    //
+    public String displayCheckedOutItems(int libraryCardNum){
+        String text = "";
+            ArrayList<String> items = memberList.getMember(libraryCardNum).getCheckedOutItems();
+            Item item;
+            text += "Checked out items of member #: " + libraryCardNum + "\n";
+            for (String element : items) {
+                item = main.getItem(element);
+                if (item != null) {
+                    text += "Id = " + item.getId() + " " + item.getType() + " " + " Name = " + item.getName();
+                    text+= " Due Date = "
+                            + (item.getDateDue().get(Calendar.MONTH) + 1)
+                            + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
+                            + "/" + item.getDateDue().get(Calendar.YEAR) + "\n";
+                    continue;
+                }
+                item = sister.getItem(element);
+                if (item != null) {
+                    if (item != null) {
+                        text += "Id = " + item.getId() + " " + item.getType() + " " + " Name = " + item.getName();
+                        text+= " Due Date = "
+                                + (item.getDateDue().get(Calendar.MONTH) + 1)
+                                + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
+                                + "/" + item.getDateDue().get(Calendar.YEAR) + "\n";
+                }
+            }
+        }
+        return text;
+    }
+
+    //
+    // getLib method - returns the library object designated by library
+    // Input : int library - library number
+    // Returns : library object
+    //
+    private Library getLib(int library){
+        switch (library) {
+            case 1 : return main;
+            case 2 : return sister;
+            default : return null;
+        }
+    }
+
+    //
+    // checkLibraryCardNumber - checks that the Library card number is valid. If not
+    //      writes error message to text area
+    // Inputs : int cardNumber - member's library card number
+    // returns : true if valid
+    //
+    public boolean checkLibraryCardNumber(int cardNumber){
+        if (cardNumber <= memberList.getNumberMembers()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+}
