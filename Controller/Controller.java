@@ -15,7 +15,7 @@ import java.util.Calendar;
 /**
  * Controller Class :
  * Creates Library objects and MemberList object. Handles checkIn, checkOut,
- * displayLibraryItems, addFileData, and displayCheckedOutItems functionality
+ * displayLibraryItems, addFileData, and displayMemberCheckedOutItems functionality
  * between the UI and the appropriate objects
  */
 
@@ -110,7 +110,7 @@ public class Controller implements Serializable {
      * Adds items from input file to appropriate library
      *
      * @param file    File to read data from
-     * @param library true = main, false = sister
+     * @param library 1 = main, 2 = sister
      */
     public void addFileData(File file, int library) {
         Library lib = getLib(library);
@@ -132,9 +132,8 @@ public class Controller implements Serializable {
         String ret = "";
         Member member = new Member(name);
         member.setLibraryCardNum(memberList.addMember(member));
-        ret += ("New Member: " + member.getName().trim()
-                + " created successfully.\nLibrary card number is: "
-                + member.getLibraryCardNum() + ".\n");
+        ret += ("New Member: " + member.getName().trim() + " created successfully.\n" +
+                "Library card number is: " + member.getLibraryCardNum() + ".\n");
         Storage.save(this, MemberIdServer.instance());
         return ret;
     }
@@ -142,7 +141,7 @@ public class Controller implements Serializable {
     /**
      * Displays items in library catalog by type
      *
-     * @param library true = main, false = sister
+     * @param library 1 = main, 2 = sister
      * @param mask    Mask of types to display 1 = book, 2 = cd, 4 = dvd, 8 = magazine
      * @return String display text
      */
@@ -173,7 +172,7 @@ public class Controller implements Serializable {
      * @param cardNumber Member's library card number
      * @return String display text
      */
-    public String displayCheckedOutItems(int cardNumber) {
+    public String displayMemberCheckedOutItems(int cardNumber) {
         String ret = "";
         if (checkLibraryCardNumber(cardNumber)) {
             ArrayList<String> items = memberList.getMember(cardNumber).getCheckedOutItems();
@@ -204,7 +203,7 @@ public class Controller implements Serializable {
                 }
             }
         } else {
-            ret += ("Library Card Number " + cardNumber + " is Invalid\n");
+            ret += ("Library card number " + cardNumber + " is invalid\n");
         }
 
         return ret;
@@ -234,7 +233,7 @@ public class Controller implements Serializable {
      * @param cardNumber Member's library card number
      * @return true if valid
      */
-    private boolean checkLibraryCardNumber(int cardNumber) {
+    boolean checkLibraryCardNumber(int cardNumber) {
         if (cardNumber <= memberList.getNumberMembers()) {
             return true;
         } else {

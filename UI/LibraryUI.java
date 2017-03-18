@@ -161,12 +161,12 @@ public class LibraryUI extends Application {
         });
 
         //
-        // Process the btCheckedOut button -- call the displayCheckedOutItems() method
+        // Process the btCheckedOut button -- call the displayMemberCheckedOutItems() method
         //
         btCheckedOut.setOnAction(e -> {
             try {
                 text.clear();
-                text.appendText(app.displayCheckedOutItems((Integer.parseInt(cardNumber.getText().trim()))));
+                text.appendText(app.displayMemberCheckedOutItems((Integer.parseInt(cardNumber.getText().trim()))));
             } catch (NumberFormatException ex) {
                 text.appendText("Incorrect card number format\n");
             }

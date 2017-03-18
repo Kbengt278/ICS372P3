@@ -6,15 +6,24 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ControllerTest {
     private static Controller testController;
 
-    private Item itemNull;
     private Item itemAvailable;
     private Item itemCheckedOutBy1;
     private Item itemNotAvailableAndNotCheckedOut;
+
+    private Item itemBookLib1;
+    private Item itemMagazineLib1;
+    private Item itemCDLib1;
+    private Item itemDVDLib1;
+    private Item itemBookLib2;
+    private Item itemMagazineLib2;
+    private Item itemCDLib2;
+    private Item itemDVDLib2;
 
     @BeforeClass
     public static void setUpClass() {
@@ -27,8 +36,6 @@ public class ControllerTest {
     @Before
     public void setUp() throws Exception {
 
-        itemNull = null;
-
         itemAvailable = new Item("itemAvailable", "item1", "Book");
         itemAvailable.setAvailable(true);
         testController.addItemToLibrary(itemAvailable,1);
@@ -40,6 +47,32 @@ public class ControllerTest {
         itemNotAvailableAndNotCheckedOut = new Item("itemNotAvailableAndNotCheckedOut", "item3", "Book");
         testController.addItemToLibrary(itemNotAvailableAndNotCheckedOut,1);
         testController.getLib(1).getItem("itemNotAvailableAndNotCheckedOut").setAvailable(false);
+
+        itemBookLib1 = new Item("Book1", "Book1", "Book");
+        testController.addItemToLibrary(itemBookLib1,1);
+        testController.checkOut(2, "Book1", 1);
+        itemMagazineLib1 = new Item("Magazine1", "Magazine1", "Magazine");
+        testController.addItemToLibrary(itemMagazineLib1,1);
+        testController.checkOut(2, "Magazine1", 1);
+        itemCDLib1 = new Item("CD1", "CD1", "CD");
+        testController.addItemToLibrary(itemCDLib1,1);
+        testController.checkOut(2, "CD1", 1);
+        itemDVDLib1 = new Item("DVD1", "DVD1", "DVD");
+        testController.addItemToLibrary(itemDVDLib1,1);
+        testController.checkOut(2, "DVD1", 1);
+
+        itemBookLib2 = new Item("Book2", "Book2", "Book");
+        testController.addItemToLibrary(itemBookLib2,2);
+        testController.checkOut(2, "Book2", 2);
+        itemMagazineLib2 = new Item("Magazine2", "Magazine2", "Magazine");
+        testController.addItemToLibrary(itemMagazineLib2,2);
+        testController.checkOut(2, "Magazine2", 2);
+        itemCDLib2 = new Item("CD2", "CD2", "CD");
+        testController.addItemToLibrary(itemCDLib2,2);
+        testController.checkOut(2, "CD2", 2);
+        itemDVDLib2 = new Item("DVD2", "DVD2", "DVD");
+        testController.addItemToLibrary(itemDVDLib2,2);
+        testController.checkOut(2, "DVD2", 2);
 
     }
 
@@ -95,16 +128,48 @@ public class ControllerTest {
 
     @Test
     public void addMember() throws Exception {
-
+        String response = "";
+        response = testController.addMember("testMember");
+        assertTrue(response.contains("Library card number is: 3"));
+        assertTrue(testController.checkLibraryCardNumber(3));
     }
 
     @Test
     public void displayLibraryItems() throws Exception {
-
+        String response = "";
+        response = testController.displayLibraryItems(1,1+2+4+8);
+        assertTrue(response.contains("Book1"));
+        assertTrue(response.contains("Magazine1"));
+        assertTrue(response.contains("CD1"));
+        assertTrue(response.contains("DVD1"));
     }
 
     @Test
     public void displayCheckedOutItems() throws Exception {
+        String response = "";
+        response = testController.displayMemberCheckedOutItems(2);
+        assertTrue(response.contains("Book1"));
+        assertTrue(response.contains("Magazine1"));
+        assertTrue(response.contains("CD1"));
+        assertTrue(response.contains("DVD1"));
+        assertTrue(response.contains("Book2"));
+        assertTrue(response.contains("Magazine2"));
+        assertTrue(response.contains("CD2"));
+        assertTrue(response.contains("DVD2"));
+    }
+
+    @Test
+    public void getLib() throws Exception {
+
+    }
+
+    @Test
+    public void checkLibraryCardNumber() throws Exception {
+
+    }
+
+    @Test
+    public void addItemToLibrary() throws Exception {
 
     }
 
