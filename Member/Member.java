@@ -5,13 +5,13 @@ import java.util.ArrayList;
 
 /**
  * Member Class :
- * Contains a member number (library card number) and a list of checked out items for teh member
+ * Contains a member number (library card number) and a list of checked out items for the member
  */
 public class Member implements Serializable {
 
     private String name;
     private int libraryCardNum;
-    private ArrayList<String> checkedOutItems = new ArrayList<String>();
+    private ArrayList<String> checkedOutItems = new ArrayList<>();
 
     public Member() {
     }
@@ -57,5 +57,12 @@ public class Member implements Serializable {
         return checkedOutItems;
     }
 
-
+    public boolean hasItem(String itemId){
+        for (String item : checkedOutItems){
+            if (item.equals(itemId)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

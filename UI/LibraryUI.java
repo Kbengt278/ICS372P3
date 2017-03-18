@@ -143,7 +143,7 @@ public class LibraryUI extends Application {
         //
         btCheckIn.setOnAction(e -> {
             try {
-                text.appendText(app.checkIn((Integer.parseInt(cardNumber.getText())), itemId.getText().trim(), library));
+                text.appendText(app.checkIn(itemId.getText().trim(), library));
             } catch (NumberFormatException ex) {
                 text.appendText("Incorrect card number format\n");
             }
@@ -154,7 +154,7 @@ public class LibraryUI extends Application {
         //
         btCheckOut.setOnAction(e -> {
             try {
-                text.appendText(app.checkOut((Integer.parseInt(cardNumber.getText())), itemId.getText().trim(), library));
+                text.appendText(app.checkOut((Integer.parseInt(cardNumber.getText().trim())), itemId.getText().trim(), library));
             } catch (NumberFormatException ex) {
                 text.appendText("Incorrect card number format\n");
             }
@@ -166,7 +166,7 @@ public class LibraryUI extends Application {
         btCheckedOut.setOnAction(e -> {
             try {
                 text.clear();
-                text.appendText(app.displayCheckedOutItems((Integer.parseInt(cardNumber.getText()))));
+                text.appendText(app.displayCheckedOutItems((Integer.parseInt(cardNumber.getText().trim()))));
             } catch (NumberFormatException ex) {
                 text.appendText("Incorrect card number format\n");
             }
@@ -233,9 +233,9 @@ public class LibraryUI extends Application {
                     library = 2;
                 }
                 if (library == 1)
-                    System.out.println("Main Library");
+                    text.appendText("Main Library:\n");
                 else
-                    System.out.println("Sister Library");
+                    text.appendText("Sister Library:\n");
 
             }
         });

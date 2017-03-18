@@ -16,7 +16,6 @@ public class Item implements Serializable {
     protected boolean available;    // Available in the library -- false = checked out
     protected Calendar dateDue;     // Due date
     protected int checkOutTimeDays; // Number of days that item can be checked out
-    protected int checkedOutBy;     // Library card number of member that has it checcked out
 
 
     public Item() {
@@ -28,7 +27,6 @@ public class Item implements Serializable {
         this.type = type;
         this.available = true;
         this.dateDue = Calendar.getInstance();
-        this.checkedOutBy = 0;
     }
 
     public String getName() {
@@ -77,14 +75,6 @@ public class Item implements Serializable {
 
     public void setCheckOutTimeDays(int checkOutTimeDays) {
         this.checkOutTimeDays = checkOutTimeDays;
-    }
-
-    public int getCheckedOutBy() {
-        return checkedOutBy;
-    }
-
-    public void setCheckedOutBy(int checkedOutBy) {
-        this.checkedOutBy = checkedOutBy;
     }
 
 }

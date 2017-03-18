@@ -5,12 +5,10 @@ import Library.Library;
 import Member.Member;
 import Member.MemberIdServer;
 import MemberList.MemberList;
-import javafx.stage.FileChooser;
 import storage.Storage;
 
 import java.io.File;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -22,52 +20,11 @@ import java.util.Calendar;
  */
 
 public class Controller implements Serializable {
-    private transient final FileChooser fileChooser = new FileChooser();
-    transient SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     private Library main = new Library();
     private Library sister = new Library();
     private MemberList memberList = new MemberList();
 
     public Controller() {
-    }
-
-    /**
-     * Removes item from member's checkedOut list
-     * Sets item's available flag true
-     * Clears items checkedOutBy field
-     *
-     * @param cardNumber Member's id number
-     * @param itemId     ID of item to check out
-     * @param library    Library to check item into
-     * @return String    display text
-     */
-    public String checkIn(int cardNumber, String itemId, int library) {
-        String ret = "";
-        if (checkLibraryCardNumber(cardNumber)) {
-            Library lib = getLib(library);
-
-            Item item = (lib.getItem(itemId.trim()));
-            if (item == null) {
-                ret += ("Item " + itemId.trim() + " does not exist\n");
-            } else if (item.isAvailable()) {
-                ret += ("Item " + itemId + " is not checked out.\n");
-            } else if (item.getCheckedOutBy() != cardNumber) {
-                ret += ("Item " + itemId + " is was not checked out by library card number " + cardNumber + ".\n");
-            } else {
-                memberList.getMember(cardNumber).removeItem(itemId);
-                item.setAvailable(true);
-                item.setCheckedOutBy(0);
-
-                ret += ("Item " + itemId.trim() + " "
-                        + item.getType() + " : "
-                        + item.getName() + "\n" +
-                        "checked in successfully\n");
-            }
-        } else {
-            ret += ("Library Card Number " + cardNumber + " is Invalid\n");
-        }
-        Storage.save(this);
-        return ret;
     }
 
     /**
@@ -86,19 +43,17 @@ public class Controller implements Serializable {
         if (checkLibraryCardNumber(cardNumber)) {
             Library lib = getLib(library);
 
-            Item item = (lib.getItem(itemId.trim()));
+            Item item = (lib.getItem(itemId));
             if (item == null) {
-                ret += ("Item " + itemId.trim() + " does not exist\n");
+                ret += ("Item " + itemId + " does not exist\n");
             } else if (!item.isAvailable()) {
                 ret += ("Item " + itemId + " is already checked out.\n");
-            }
-            if (item != null) {
+            } else if (item != null) {
                 memberList.getMember(cardNumber).addItem(itemId);
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
                 item.setAvailable(false);
                 item.setDateDue(cal);
-                item.setCheckedOutBy(cardNumber);
 
                 ret += ("Item " + itemId + " "
                         + item.getType() + " : "
@@ -110,6 +65,41 @@ public class Controller implements Serializable {
             }
         } else {
             ret += ("Library Card Number " + cardNumber + " is Invalid\n");
+        }
+        Storage.save(this);
+        return ret;
+    }
+
+    /**
+     * Removes item from member's checkedOut list
+     * Sets item's available flag true
+     * Clears items checkedOutBy field
+     *
+     * @param itemId     ID of item to check out
+     * @param library    Library to check item into
+     * @return String    display text
+     */
+    public String checkIn(String itemId, int library) {
+        String ret = "";
+        Library lib = getLib(library);
+
+        Item item = (lib.getItem(itemId));
+        if (item == null) {
+            ret += ("Item " + itemId + " does not exist\n");
+        } else if (item.isAvailable()) {
+            ret += ("Item " + itemId + " is not checked out.\n");
+        } else {
+            try {
+                memberList.getMemberWithItem(itemId).removeItem(itemId);
+                item.setAvailable(true);
+
+                ret += ("Item " + itemId + " "
+                        + item.getType() + " : "
+                        + item.getName() + "\n" +
+                        "checked in successfully\n");
+            } catch (NullPointerException e) {
+                ret += ("Error: Item " + itemId + " is marked as checked out but no member has it checked out.\n");
+            }
         }
         Storage.save(this);
         return ret;
@@ -225,7 +215,7 @@ public class Controller implements Serializable {
      * @param library library number
      * @return Library object
      */
-    private Library getLib(int library) {
+    public Library getLib(int library) {
         switch (library) {
             case 1:
                 return main;
@@ -249,5 +239,9 @@ public class Controller implements Serializable {
         } else {
             return false;
         }
+    }
+
+    public void addItemToMain(Item addThisItem) {
+        main.addItem(addThisItem);
     }
 }

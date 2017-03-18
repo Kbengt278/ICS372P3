@@ -250,17 +250,11 @@ public class Library implements Serializable {
         return ret;
     }
 
-    /**
-     * Returns the Item object pointed to by id
-     *
-     * @param id Item id of object
-     * @return Item object
-     */
     public Item getItem(String id) {
         return list.get(id);
     }
 
-    public void addItem(Item itemAvailable) {
-        list.put(itemAvailable.getId(), new Item(itemAvailable.getId(), itemAvailable.getName(), itemAvailable.getType()));
+    public void addItem(Item addThisItem) {
+        list.put(addThisItem.getId(), new Item(addThisItem.getId(), addThisItem.getName(), addThisItem.getType()));
     }
 }
