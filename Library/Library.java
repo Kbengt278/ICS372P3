@@ -303,4 +303,8 @@ public class Library implements Serializable {
         Item item = lib.getItem(itemId);
         return item.getDateDue();
     }
+
+    public int size() {
+        return list.size();
+    }
 }
