@@ -48,7 +48,7 @@ public class Controller implements Serializable {
                 ret += ("Item " + itemId + " does not exist\n");
             } else if (!item.isAvailable()) {
                 ret += ("Item " + itemId + " is already checked out.\n");
-            } else if (item != null) {
+            } else {
                 memberList.getMember(cardNumber).addItem(itemId);
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
@@ -64,7 +64,7 @@ public class Controller implements Serializable {
                         + "/" + item.getDateDue().get(Calendar.YEAR) + ".\n");
             }
         } else {
-            ret += ("Library Card Number " + cardNumber + " is Invalid\n");
+            ret += ("Library card number " + cardNumber + " is invalid\n");
         }
         Storage.save(this);
         return ret;
@@ -75,8 +75,8 @@ public class Controller implements Serializable {
      * Sets item's available flag true
      * Clears items checkedOutBy field
      *
-     * @param itemId     ID of item to check out
-     * @param library    Library to check item into
+     * @param itemId  ID of item to check out
+     * @param library Library to check item into
      * @return String    display text
      */
     public String checkIn(String itemId, int library) {
@@ -91,6 +91,7 @@ public class Controller implements Serializable {
         } else {
             try {
                 memberList.getMemberWithItem(itemId).removeItem(itemId);
+                System.out.println(item.isAvailable());
                 item.setAvailable(true);
 
                 ret += ("Item " + itemId + " "
@@ -215,7 +216,7 @@ public class Controller implements Serializable {
      * @param library library number
      * @return Library object
      */
-    public Library getLib(int library) {
+    Library getLib(int library) {
         switch (library) {
             case 1:
                 return main;
@@ -241,7 +242,7 @@ public class Controller implements Serializable {
         }
     }
 
-    public void addItemToMain(Item addThisItem) {
-        main.addItem(addThisItem);
+    public void addItemToLibrary(Item addThisItem, int library) {
+        getLib(library).addItem(addThisItem);
     }
 }
