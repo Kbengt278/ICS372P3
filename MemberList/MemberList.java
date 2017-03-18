@@ -2,6 +2,7 @@ package MemberList;
 
 import Member.Member;
 import Member.MemberIdServer;
+import storage.Storage;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -16,12 +17,19 @@ public class MemberList implements Serializable {
 
     public MemberList() {
     }
-
-    public int addMember(Member mem) {
-        mem = new Member();
-        int id = iDserver.getId();
-        memberList.put((Integer) id, mem);
-        return id;
+    
+    /**
+     * Adds a member to memberList with a library card number
+     *
+     * @param name Name of new member
+     * @return String display text
+     */
+    public Member createMember(String name)
+    {
+    	int id = iDserver.getId();
+	    Member member = new Member(id, name);
+	    memberList.put((Integer) id, member);
+        return member;
     }
 
     public Member getMember(int id) {

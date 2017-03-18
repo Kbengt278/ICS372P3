@@ -13,10 +13,8 @@ public class Member implements Serializable {
     private int libraryCardNum;
     private ArrayList<String> checkedOutItems = new ArrayList<>();
 
-    public Member() {
-    }
-
-    public Member(String name) {
+    public Member(int libraryCardNumber, String name) {
+    	this.libraryCardNum = libraryCardNumber;
         this.name = name;
     }
 
@@ -30,10 +28,6 @@ public class Member implements Serializable {
 
     public int getLibraryCardNum() {
         return libraryCardNum;
-    }
-
-    public void setLibraryCardNum(int libraryCardNum) {
-        this.libraryCardNum = libraryCardNum;
     }
 
     //

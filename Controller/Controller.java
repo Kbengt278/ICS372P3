@@ -40,9 +40,10 @@ public class Controller implements Serializable {
      */
     public String checkOut(int cardNumber, String itemId, int library) {
         String ret = "";
-        if (checkLibraryCardNumber(cardNumber)) {
+        
+        if (checkLibraryCardNumber(cardNumber))
+        {
             Library lib = getLib(library);
-
             Item item = (lib.getItem(itemId));
             if (item == null) {
                 ret += ("Item " + itemId + " does not exist\n");
@@ -130,8 +131,7 @@ public class Controller implements Serializable {
      */
     public String addMember(String name) {
         String ret = "";
-        Member member = new Member(name);
-        member.setLibraryCardNum(memberList.addMember(member));
+        Member member = this.memberList.createMember(name);
         ret += ("New Member: " + member.getName().trim() + " created successfully.\n" +
                 "Library card number is: " + member.getLibraryCardNum() + ".\n");
         Storage.save(this, MemberIdServer.instance());
@@ -225,20 +225,20 @@ public class Controller implements Serializable {
                 return null;
         }
     }
-
+    
     /**
-     * Checks that the Library card number is valid.
-     * If not writes error message to text area
-     *
-     * @param cardNumber Member's library card number
+     *  Checks that the Library card number is valid.
+     *  If not writes error message to text area.
+     *  
+     * @param cardNumber The entered library card number.
      * @return true if valid
      */
-    boolean checkLibraryCardNumber(int cardNumber) {
-        if (cardNumber <= memberList.getNumberMembers()) {
-            return true;
-        } else {
-            return false;
-        }
+    private boolean checkLibraryCardNumber(int cardNumber)
+    {
+    	if(cardNumber > -1 && cardNumber <= memberList.getNumberMembers())
+    		return true;
+    	else
+    		return false;
     }
 
     public void addItemToLibrary(Item addThisItem, int library) {
