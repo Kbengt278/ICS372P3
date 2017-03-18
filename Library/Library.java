@@ -2,7 +2,6 @@ package Library;
 
 
 import Items.*;
-import javafx.scene.control.TextArea;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -15,7 +14,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * Library Class :
@@ -27,57 +27,6 @@ public class Library implements Serializable {
     private HashMap<String, Item> list = new HashMap<>();
 
     public Library() {
-    }
-
-    /**
-     * Sets item's available flag true, clears items checkedOutBy field
-     *
-     * @param cardNumber Library card number of member
-     * @param itemId     Item ID to be checked in
-     * @return Item - Object to be checked in. Null if item doesn't exist
-     */
-    public Item checkIn(int cardNumber, String itemId, TextArea text) {
-        Item item = list.get(itemId);
-        if (item == null) {
-            text.appendText("Item " + itemId.trim() + " does not exist\n");
-            return null;
-        } else if (item.isAvailable()) {
-            text.appendText("Item " + itemId + " is not checked out.\n");
-            return null;
-        } else if (item.getCheckedOutBy() != cardNumber) {
-            text.appendText("Item " + itemId + " is was not checked out by library card number " + cardNumber + ".\n");
-            return null;
-        } else {
-            item.setAvailable(true);
-            item.setCheckedOutBy(0);
-            return item;
-        }
-    }
-
-    /**
-     * Sets item's available flag false, sets checkedOutBy to cardNumber,
-     * Sets item's DateDue to appropriate due date
-     *
-     * @param cardNumber Library card number of member
-     * @param itemId     Item ID to be checked out
-     * @return Item - Object to be checked out. Null if item doesn't exist or is unavailable
-     */
-    public Item checkOut(int cardNumber, String itemId, TextArea text) {
-        Item item = list.get(itemId);
-        if (item == null) {
-            text.appendText("Item " + itemId + " does not exist.\n");
-            return null;
-        } else if (!item.isAvailable()) {
-            text.appendText("Item " + itemId + " is already checked out.\n");
-            return null;
-        } else {
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
-            item.setAvailable(false);
-            item.setDateDue(cal);
-            item.setCheckedOutBy(cardNumber);
-            return item;
-        }
     }
 
     /**
@@ -283,35 +232,29 @@ public class Library implements Serializable {
      * Displays items in the Library catalog
      *
      * @param type The type of items to display (e.g book, cd, dvd)
-     * @param text Text area to write output to
+     * @return String display text
      */
-    public void displayItems(String type, TextArea text) {
-        Set set = list.entrySet();
-        Iterator i = set.iterator();
-        // Display elements
-        while (i.hasNext()) {
-            Map.Entry temp = (Map.Entry) i.next();
-            Item item = (Item) temp.getValue();
-            if (type.compareToIgnoreCase(item.getType()) == 0) {
-                text.appendText("Id = " + item.getId());
-                text.appendText(" " + item.getType() + " ");
-                text.appendText(" Name = " + item.getName());
-                if (item.isAvailable())
-                    text.appendText(" - Available\n");
+    public String displayItems(String type) {
+        String ret = "";
+        for (Item value : list.values()) {
+            if (type.equalsIgnoreCase(value.getType())) {
+                ret += ("Id = " + value.getId());
+                ret += (" " + value.getType() + " ");
+                ret += (" Name = " + value.getName());
+                if (value.isAvailable())
+                    ret += (" - Available\n");
                 else
-                    text.appendText(" - Checked out\n");
+                    ret += (" - Checked out\n");
             }
         }
-
+        return ret;
     }
 
-    /**
-     * Returns the Item object pointed to by id
-     *
-     * @param id Item id of object
-     * @return Item object
-     */
     public Item getItem(String id) {
         return list.get(id);
+    }
+
+    public void addItem(Item addThisItem) {
+        list.put(addThisItem.getId(), new Item(addThisItem.getId(), addThisItem.getName(), addThisItem.getType()));
     }
 }
