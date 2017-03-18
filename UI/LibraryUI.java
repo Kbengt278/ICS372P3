@@ -42,9 +42,7 @@ public class LibraryUI extends Application {
 
     @Override // Override the start method in the Controller class
     public void start(Stage primaryStage) throws IOException {
-
-        // Load data from file
-        app = storage.Storage.loadController();
+        app = storage.Storage.loadController(); // Load data from file
 
         // Create a border pane
         VBox pane = new VBox();
@@ -145,7 +143,7 @@ public class LibraryUI extends Application {
         //
         btCheckIn.setOnAction(e -> {
             try {
-                app.checkIn((Integer.parseInt(cardNumber.getText())), itemId.getText().trim(), library, text);
+                text.appendText(app.checkIn((Integer.parseInt(cardNumber.getText())), itemId.getText().trim(), library));
             } catch (NumberFormatException ex) {
                 text.appendText("Incorrect card number format\n");
             }
@@ -156,7 +154,7 @@ public class LibraryUI extends Application {
         //
         btCheckOut.setOnAction(e -> {
             try {
-                app.checkOut((Integer.parseInt(cardNumber.getText())), itemId.getText().trim(), library, text);
+                text.appendText(app.checkOut((Integer.parseInt(cardNumber.getText())), itemId.getText().trim(), library));
             } catch (NumberFormatException ex) {
                 text.appendText("Incorrect card number format\n");
             }
@@ -167,7 +165,8 @@ public class LibraryUI extends Application {
         //
         btCheckedOut.setOnAction(e -> {
             try {
-                app.displayCheckedOutItems((Integer.parseInt(cardNumber.getText())), text);
+                text.clear();
+                text.appendText(app.displayCheckedOutItems((Integer.parseInt(cardNumber.getText()))));
             } catch (NumberFormatException ex) {
                 text.appendText("Incorrect card number format\n");
             }
@@ -183,7 +182,7 @@ public class LibraryUI extends Application {
 
             Optional<String> result = newMember.showAndWait();
             if (result.isPresent()) {
-                app.addMember(result.get(), text);
+                text.appendText(app.addMember(result.get()));
             }
         });
 
@@ -218,7 +217,7 @@ public class LibraryUI extends Application {
             if (cbMagazines.isSelected()) {
                 mask += 8;
             }
-            app.displayLibraryItems(library, text, mask);
+            text.appendText(app.displayLibraryItems(library, mask));
         });
 
         //
