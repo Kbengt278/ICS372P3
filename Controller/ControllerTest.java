@@ -90,7 +90,7 @@ public class ControllerTest {
 
         // check out item already checked out
         response = testController.checkOut(1, "itemCheckedOutBy1", 1);
-        assertTrue(response.contains("already checked out"));
+        assertTrue(response.contains("not checked in"));
 
         // use invalid card number
         response = testController.checkOut(99, "itemCheckedOutBy1", 1);
@@ -114,7 +114,7 @@ public class ControllerTest {
 
         // check in item that is not checked out
         response = testController.checkIn("itemAvailable", 1);
-        assertTrue(response.contains("is not checked out"));
+        assertTrue(response.contains("not checked out"));
 
         // test success
         response = testController.checkIn("itemCheckedOutBy1", 1);
