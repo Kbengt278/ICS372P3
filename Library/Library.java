@@ -33,20 +33,6 @@ public class Library implements Serializable {
     public Library() {
     }
 
-    //
-    // checkIn method -- sets items available flag true, clears items checkeOutBy field
-    // Inputs : int cardNumber - Library card number of member
-    //          String itemId - item ID to be checked in
-    // Output : Item - object to be checked in. null if item doesn't exist
-    //
-    public Item checkIn(String itemId) {
-        Item item = list.get(itemId);
-        if (item != null) {
-            item.setAvailable(true);
-        }
-        return item;
-    }
-
     /**
      * checkOut method -- sets items available flag false, sets checkedOutBy to cardNumber,
      * sets items DateDue to approprate due date
@@ -82,6 +68,25 @@ public class Library implements Serializable {
         }
         return message;
     }
+    
+    /**
+     * checkIn method -- sets items available flag true, clears items checkeOutBy field
+     * @param itemId - item ID to be checked in
+     * @return null if item is null; false if item is available; otherwise, true
+     */
+    public Boolean checkIn(String itemId)
+    {
+        Item item = list.get(itemId);
+        if (item == null) {
+            return null;
+        } else if (item.isAvailable()) {
+            return false;
+        } else {
+            item.setAvailable(true);
+            item.setDateDue(null);
+            return true;
+        }
+    }
 
     /**
      * Displays items in the Library catalog
@@ -104,46 +109,7 @@ public class Library implements Serializable {
         }
         return ret;
     }
-
-    public Boolean checkOut(String itemId, Library library) {
-        Library lib = library;
-        Item item = lib.getItem(itemId);
-        if (item == null) {
-            return null;
-        } else if (!item.isAvailable()) {
-            return false;
-        } else {
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
-            item.setAvailable(false);
-            item.setDateDue(cal);
-            return true;
-        }
-    }
-
-    public Boolean checkIn(String itemId, Library library) {
-        Library lib = library;
-
-        Item item = lib.getItem(itemId);
-        if (item == null) {
-            return null;
-        } else if (item.isAvailable()) {
-            return false;
-        } else {
-            item.setAvailable(true);
-            item.setDateDue(null);
-            return true;
-        }
-    }
-
-    public String toString(String itemId, Library library) {
-        Library lib = library;
-        Item item = lib.getItem(itemId);
-        return ("Item " + itemId + " "
-                + item.getType() + " : "
-                + item.getName() + "\n");
-    }
-
+    
     public Item getItem(String id) {
         return list.get(id);
     }
@@ -157,9 +123,20 @@ public class Library implements Serializable {
         Item item = lib.getItem(itemId);
         return item.getDateDue();
     }
-
-    //
-    // size - returns size of library HashMap
-    //
-    public int size(){ return list.size(); }
+    
+    /**
+     * 
+     * @return size of library HashMap
+     */
+    public int size() {
+    	return list.size();
+    }
+    
+    public String toString(String itemId, Library library) {
+        Library lib = library;
+        Item item = lib.getItem(itemId);
+        return ("Item " + itemId + " "
+                + item.getType() + " : "
+                + item.getName() + "\n");
+    }
 }

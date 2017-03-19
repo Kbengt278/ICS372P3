@@ -56,7 +56,11 @@ public class Controller implements Serializable {
         if (member != null)
         {
             Library lib = getLib(library);
-            message = lib.checkOut(itemId, member);
+            // check that library isn't null. Just to be safe.
+            if(lib == null)
+            	message += ("Library value is invalid\n");
+            else
+            	message = lib.checkOut(itemId, member);
         } else
         	message += ("Library card number " + cardNumber + " is invalid\n");
             
@@ -76,13 +80,14 @@ public class Controller implements Serializable {
     public String checkIn(String itemId, int library) {
         String ret = "";
         Library lib = getLib(library);
-        Boolean isCheckedOut = lib.checkIn(itemId, lib);
+        Boolean isCheckedOut = lib.checkIn(itemId);
       
-        if (isCheckedOut == null) {
+        if (isCheckedOut == null)
             ret += "Item " + itemId + " does not exist\n";
-        } else if (!isCheckedOut) {
+        else if (!isCheckedOut)
             ret += "Item " + itemId + " is not checked out.\n";
-        } else {
+        else
+        {
             try {
                 memberList.getMemberWithItem(itemId).removeItem(itemId);
                 ret += lib.toString(itemId, lib);
