@@ -3,23 +3,9 @@ package Library;
 
 import Items.*;
 import Member.Member;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import java.util.Calendar;
-
-import javax.json.Json;
-import javax.json.stream.JsonParser;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Scanner;
 
 /**
  * Library Class :
@@ -114,10 +100,18 @@ public class Library implements Serializable {
         return list.get(id);
     }
 
-    public void addItem(Item addThisItem) {
-        list.put(addThisItem.getId(), new Item(addThisItem.getId(), addThisItem.getName(), addThisItem.getType()));
+    /**
+    * Adds item to the list
+    *
+    * @param item The item object to be added to list
+     **/
+    public void addItem(Item item) {
+        list.put(item.getId(), item);
     }
 
+    //
+    // Returns due date of item
+    //
     public Calendar getDueDate(String itemId, Library library) {
         Library lib = library;
         Item item = lib.getItem(itemId);
