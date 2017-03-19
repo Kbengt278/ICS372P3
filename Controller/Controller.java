@@ -50,35 +50,27 @@ public class Controller implements Serializable {
      */
     public String checkOut(int cardNumber, String itemId, int library) {
         String ret = "";
-        
-        if (checkLibraryCardNumber(cardNumber))
-        {
-            Library lib = getLib(library);
-<<<<<<< HEAD
-            Item item = (lib.getItem(itemId));
-            if (item == null) {
-=======
+        Library lib = getLib(library);
+        Boolean isCheckedIn = lib.checkOut(itemId, lib);
 
-            if (lib.getItem(itemId) == null) {
->>>>>>> aad581e933f729db9292e47ef07520b3fe5a2b0d
-                ret += ("Item " + itemId + " does not exist\n");
-                return ret;
-            }
-            Item item = (lib.checkOut(itemId.trim()));
-            if (item == null) {
-                ret += ("Item " + itemId + " is already checked out.\n");
+        if (checkLibraryCardNumber(cardNumber)) {
+            if (isCheckedIn == null) {
+                ret += "Item " + itemId + " does not exist\n";
+            } else if (!isCheckedIn) {
+                ret += "Item " + itemId + " is not checked in.\n";
             } else {
                 memberList.getMember(cardNumber).addItem(itemId);
-                ret += ("Item " + itemId + " "
-                        + item.getType() + " : "
-                        + item.getName() + "\n"
-                        + "checked out successfully. Due date is "
-                        + (item.getDateDue().get(Calendar.MONTH) + 1)
-                        + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
-                        + "/" + item.getDateDue().get(Calendar.YEAR) + ".\n");
+
+                ret += lib.toString(itemId, lib);
+                ret += "checked out successfully. Due date is ";
+                Calendar dueDate = lib.getDueDate(itemId, lib);
+                ret += (dueDate.get(Calendar.MONTH) + 1)
+                        + "/" + dueDate.get(Calendar.DAY_OF_MONTH)
+                        + "/" + dueDate.get(Calendar.YEAR) + ".\n";
+
             }
         } else {
-            ret += ("Library card number " + cardNumber + " is invalid\n");
+            ret += "Library card number " + cardNumber + " is invalid\n";
         }
         Storage.save(this);
         return ret;
@@ -96,19 +88,20 @@ public class Controller implements Serializable {
     public String checkIn(String itemId, int library) {
         String ret = "";
         Library lib = getLib(library);
-
-        Item item = (lib.checkIn(itemId));
-        if (item == null) {
-            ret += ("Item " + itemId + " does not exist\n");
+        Boolean isCheckedOut = lib.checkIn(itemId, lib);
+      
+        if (isCheckedOut == null) {
+            ret += "Item " + itemId + " does not exist\n";
+        } else if (!isCheckedOut) {
+            ret += "Item " + itemId + " is not checked out.\n";
         } else {
             try {
                 memberList.getMemberWithItem(itemId).removeItem(itemId);
-                ret += ("Item " + itemId + " "
-                        + item.getType() + " : "
-                        + item.getName() + "\n" +
-                        "checked in successfully\n");
+                ret += lib.toString(itemId, lib);
+                ret += "checked in successfully\n";
+
             } catch (NullPointerException e) {
-                ret += ("Error: Item " + itemId + " is marked as checked out but no member has it checked out.\n");
+                ret += "Error: Item " + itemId + " is marked as checked out but no member has it checked out.\n";
             }
         }
         Storage.save(this);
@@ -338,9 +331,11 @@ public class Controller implements Serializable {
      */
     public String addMember(String name) {
         String ret = "";
+
         Member member = this.memberList.createMember(name);
         ret += ("New Member: " + member.getName().trim() + " created successfully.\n" +
                 "Library card number is: " + member.getLibraryCardNum() + ".\n");
+      
         Storage.save(this, MemberIdServer.instance());
         return ret;
     }
@@ -389,24 +384,24 @@ public class Controller implements Serializable {
             for (String element : items) {
                 item = main.getItem(element);
                 if (item != null) {
-                    ret += ("Id = " + item.getId());
-                    ret += (" " + item.getType() + " ");
-                    ret += (" Name = " + item.getName());
-                    ret += (" Due Date = "
+                    ret += "Id = " + item.getId();
+                    ret += " " + item.getType() + " ";
+                    ret += " Name = " + item.getName();
+                    ret += " Due Date = "
                             + (item.getDateDue().get(Calendar.MONTH) + 1)
                             + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
-                            + "/" + item.getDateDue().get(Calendar.YEAR) + "\n");
+                            + "/" + item.getDateDue().get(Calendar.YEAR) + "\n";
                     continue;
                 }
                 item = sister.getItem(element);
                 if (item != null) {
-                    ret += ("Id = " + item.getId());
-                    ret += (" " + item.getType() + " ");
-                    ret += (" Name = " + item.getName());
-                    ret += (" Due Date = "
+                    ret += "Id = " + item.getId();
+                    ret += " " + item.getType() + " ";
+                    ret += " Name = " + item.getName();
+                    ret += " Due Date = "
                             + (item.getDateDue().get(Calendar.MONTH) + 1)
                             + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
-                            + "/" + item.getDateDue().get(Calendar.YEAR) + "\n");
+                            + "/" + item.getDateDue().get(Calendar.YEAR) + "\n";
                 }
             }
         } else {

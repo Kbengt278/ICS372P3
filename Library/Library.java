@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -85,6 +86,45 @@ public class Library implements Serializable {
         return ret;
     }
 
+    public Boolean checkOut(String itemId, Library library) {
+        Library lib = library;
+        Item item = lib.getItem(itemId);
+        if (item == null) {
+            return null;
+        } else if (!item.isAvailable()) {
+            return false;
+        } else {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
+            item.setAvailable(false);
+            item.setDateDue(cal);
+            return true;
+        }
+    }
+
+    public Boolean checkIn(String itemId, Library library) {
+        Library lib = library;
+
+        Item item = lib.getItem(itemId);
+        if (item == null) {
+            return null;
+        } else if (item.isAvailable()) {
+            return false;
+        } else {
+            item.setAvailable(true);
+            item.setDateDue(null);
+            return true;
+        }
+    }
+
+    public String toString(String itemId, Library library) {
+        Library lib = library;
+        Item item = lib.getItem(itemId);
+        return ("Item " + itemId + " "
+                + item.getType() + " : "
+                + item.getName() + "\n");
+    }
+
     public Item getItem(String id) {
         return list.get(id);
     }
@@ -93,10 +133,14 @@ public class Library implements Serializable {
         list.put(addThisItem.getId(), new Item(addThisItem.getId(), addThisItem.getName(), addThisItem.getType()));
     }
 
+    public Calendar getDueDate(String itemId, Library library) {
+        Library lib = library;
+        Item item = lib.getItem(itemId);
+        return item.getDateDue();
+    }
+
     //
     // size - returns size of library HashMap
     //
     public int size(){ return list.size(); }
-
-
 }
