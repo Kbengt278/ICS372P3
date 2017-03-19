@@ -2,6 +2,8 @@ package Library;
 
 
 import Items.*;
+import Member.Member;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -44,23 +46,40 @@ public class Library implements Serializable {
         return item;
     }
 
-    //
-    // checkOut method -- sets items available flag false, sets checkedOutBy to cardNumber,
-    //                  sets items DateDue to approprate due date
-    // Inputs : int cardNumber - Library card number of member
-    //          String itemId - item ID to be checked out
-    // Output : Item - object to be checked out. null if item doesn't exist or is unavailable
-    //
-    public Item checkOut(String itemId) {
+    /**
+     * checkOut method -- sets items available flag false, sets checkedOutBy to cardNumber,
+     * sets items DateDue to approprate due date
+     * 
+     * @param itemId - item ID to be checked out
+     * @param member
+     * @return message to user
+     */
+    public String checkOut(String itemId, Member member)
+    {
+    	String message = "";
         Item item = list.get(itemId);
-        if (item == null || !item.isAvailable())
-            return null;
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
-        item.setAvailable(false);
-        item.setDateDue(cal);
-        return item;
-
+        
+        if (item == null)
+        	message += ("Item " + itemId + " does not exist\n");
+        else if (!item.isAvailable())
+        	message += ("Item " + itemId + " is already checked out.\n");
+        else
+        {
+            member.addItem(itemId);
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
+            item.setAvailable(false);
+            item.setDateDue(cal);
+            
+            message += ("Item " + itemId + " "
+                    + item.getType() + " : "
+                    + item.getName() + "\n"
+                    + "checked out successfully. Due date is "
+                    + (item.getDateDue().get(Calendar.MONTH) + 1)
+                    + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
+                    + "/" + item.getDateDue().get(Calendar.YEAR) + ".\n");
+        }
+        return message;
     }
 
     /**

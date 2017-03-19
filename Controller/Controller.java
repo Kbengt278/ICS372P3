@@ -48,40 +48,20 @@ public class Controller implements Serializable {
      * @param library    Library to check item out of
      * @return String    display text
      */
-    public String checkOut(int cardNumber, String itemId, int library) {
-        String ret = "";
-        
-        if (checkLibraryCardNumber(cardNumber))
+    public String checkOut(int cardNumber, String itemId, int library)
+    {
+    	String message = "";
+    	Member member = this.memberList.getMember(cardNumber);
+    	//check if card number is valid
+        if (member != null)
         {
             Library lib = getLib(library);
-<<<<<<< HEAD
-            Item item = (lib.getItem(itemId));
-            if (item == null) {
-=======
-
-            if (lib.getItem(itemId) == null) {
->>>>>>> aad581e933f729db9292e47ef07520b3fe5a2b0d
-                ret += ("Item " + itemId + " does not exist\n");
-                return ret;
-            }
-            Item item = (lib.checkOut(itemId.trim()));
-            if (item == null) {
-                ret += ("Item " + itemId + " is already checked out.\n");
-            } else {
-                memberList.getMember(cardNumber).addItem(itemId);
-                ret += ("Item " + itemId + " "
-                        + item.getType() + " : "
-                        + item.getName() + "\n"
-                        + "checked out successfully. Due date is "
-                        + (item.getDateDue().get(Calendar.MONTH) + 1)
-                        + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
-                        + "/" + item.getDateDue().get(Calendar.YEAR) + ".\n");
-            }
-        } else {
-            ret += ("Library card number " + cardNumber + " is invalid\n");
-        }
+            message = lib.checkOut(itemId, member);
+        } else
+        	message += ("Library card number " + cardNumber + " is invalid\n");
+            
         Storage.save(this);
-        return ret;
+        return message;
     }
 
     /**
@@ -379,10 +359,14 @@ public class Controller implements Serializable {
      * @param cardNumber Member's library card number
      * @return String display text
      */
-    public String displayMemberCheckedOutItems(int cardNumber) {
+    public String displayMemberCheckedOutItems(int cardNumber)
+    {
         String ret = "";
-        if (checkLibraryCardNumber(cardNumber)) {
-            ArrayList<String> items = memberList.getMember(cardNumber).getCheckedOutItems();
+        Member member = this.memberList.getMember(cardNumber);
+        
+        if (member != null)
+        {
+            ArrayList<String> items = member.getCheckedOutItems();
 
             Item item;
             ret += ("Checked out items of member #: " + cardNumber + "\n");

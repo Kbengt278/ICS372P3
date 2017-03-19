@@ -19,7 +19,7 @@ public class MemberList implements Serializable {
     }
     
     /**
-     * Adds a member to memberList with a library card number
+     * Creates and adds a member to memberList with a library card number
      *
      * @param name Name of new member
      * @return String display text
