@@ -1,7 +1,6 @@
 package UI;
 
 import Controller.Controller;
-import Library.Library;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -33,7 +32,6 @@ public class LibraryUI extends Application {
     private final ScrollPane scrollPane = new ScrollPane();
     private final FileChooser fileChooser = new FileChooser();
     private int library = 1;
-    private Library lib = new Library();
     private Controller app = new Controller();
 
     public static void main(String[] args) {

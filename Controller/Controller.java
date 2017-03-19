@@ -78,27 +78,27 @@ public class Controller implements Serializable {
      * @return String    display text
      */
     public String checkIn(String itemId, int library) {
-        String ret = "";
+        String message = "";
         Library lib = getLib(library);
         Boolean isCheckedOut = lib.checkIn(itemId);
       
         if (isCheckedOut == null)
-            ret += "Item " + itemId + " does not exist\n";
+        	message += "Item " + itemId + " does not exist\n";
         else if (!isCheckedOut)
-            ret += "Item " + itemId + " is not checked out.\n";
+        	message += "Item " + itemId + " is not checked out.\n";
         else
         {
             try {
                 memberList.getMemberWithItem(itemId).removeItem(itemId);
-                ret += lib.toString(itemId, lib);
-                ret += "checked in successfully\n";
+                message += lib.toString(itemId, lib);
+                message += "checked in successfully\n";
 
             } catch (NullPointerException e) {
-                ret += "Error: Item " + itemId + " is marked as checked out but no member has it checked out.\n";
+            	message += "Error: Item " + itemId + " is marked as checked out but no member has it checked out.\n";
             }
         }
         Storage.save(this);
-        return ret;
+        return message;
     }
 
     /**
@@ -132,7 +132,6 @@ public class Controller implements Serializable {
         String textLine = "";
         String keyName = "";
         String value;
-        int index = 0;
         boolean startArray = false;
 
         Scanner input = null;
@@ -323,14 +322,14 @@ public class Controller implements Serializable {
      * @return String display text
      */
     public String addMember(String name) {
-        String ret = "";
+        String message = "";
 
         Member member = this.memberList.createMember(name);
-        ret += ("New Member: " + member.getName().trim() + " created successfully.\n" +
+        message += ("New Member: " + member.getName().trim() + " created successfully.\n" +
                 "Library card number is: " + member.getLibraryCardNum() + ".\n");
       
         Storage.save(this, MemberIdServer.instance());
-        return ret;
+        return message;
     }
 
     /**
@@ -341,24 +340,24 @@ public class Controller implements Serializable {
      * @return String display text
      */
     public String displayLibraryItems(int library, int mask) {
-        String ret = "";
+        String message = "";
         Library lib = getLib(library);
         if ((mask & 1) == 1) {
-            ret += lib.displayItems("Book");
+        	message += lib.displayItems("Book");
         }
         if ((mask & 2) == 2) {
-            ret += lib.displayItems("CD");
+        	message += lib.displayItems("CD");
         }
         if ((mask & 4) == 4) {
-            ret += lib.displayItems("DVD");
+        	message += lib.displayItems("DVD");
         }
         if ((mask & 8) == 8) {
-            ret += lib.displayItems("Magazine");
+        	message += lib.displayItems("Magazine");
         }
-        if (ret.equals("")) {
-            ret += "No items in this library.\n";
+        if (message.equals("")) {
+        	message += "No items in this library.\n";
         }
-        return ret;
+        return message;
     }
 
     /**
@@ -369,7 +368,7 @@ public class Controller implements Serializable {
      */
     public String displayMemberCheckedOutItems(int cardNumber)
     {
-        String ret = "";
+        String message = "";
         Member member = this.memberList.getMember(cardNumber);
         
         if (member != null)
@@ -377,14 +376,14 @@ public class Controller implements Serializable {
             ArrayList<String> items = member.getCheckedOutItems();
 
             Item item;
-            ret += ("Checked out items of member #: " + cardNumber + "\n");
+            message += ("Checked out items of member #: " + cardNumber + "\n");
             for (String element : items) {
                 item = main.getItem(element);
                 if (item != null) {
-                    ret += "Id = " + item.getId();
-                    ret += " " + item.getType() + " ";
-                    ret += " Name = " + item.getName();
-                    ret += " Due Date = "
+                	message += "Id = " + item.getId();
+                	message += " " + item.getType() + " ";
+                	message += " Name = " + item.getName();
+                	message += " Due Date = "
                             + (item.getDateDue().get(Calendar.MONTH) + 1)
                             + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
                             + "/" + item.getDateDue().get(Calendar.YEAR) + "\n";
@@ -392,20 +391,20 @@ public class Controller implements Serializable {
                 }
                 item = sister.getItem(element);
                 if (item != null) {
-                    ret += "Id = " + item.getId();
-                    ret += " " + item.getType() + " ";
-                    ret += " Name = " + item.getName();
-                    ret += " Due Date = "
+                	message += "Id = " + item.getId();
+                	message += " " + item.getType() + " ";
+                    message += " Name = " + item.getName();
+                    message += " Due Date = "
                             + (item.getDateDue().get(Calendar.MONTH) + 1)
                             + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
                             + "/" + item.getDateDue().get(Calendar.YEAR) + "\n";
                 }
             }
         } else {
-            ret += ("Library card number " + cardNumber + " is invalid\n");
+        	message += ("Library card number " + cardNumber + " is invalid\n");
         }
 
-        return ret;
+        return message;
     }
 
     /**
@@ -423,21 +422,6 @@ public class Controller implements Serializable {
             default:
                 return null;
         }
-    }
-    
-    /**
-     *  Checks that the Library card number is valid.
-     *  If not writes error message to text area.
-     *  
-     * @param cardNumber The entered library card number.
-     * @return true if valid
-     */
-    private boolean checkLibraryCardNumber(int cardNumber)
-    {
-    	if(cardNumber > -1 && cardNumber <= memberList.getNumberMembers())
-    		return true;
-    	else
-    		return false;
     }
 
     public void addItemToLibrary(Item addThisItem, int library) {
