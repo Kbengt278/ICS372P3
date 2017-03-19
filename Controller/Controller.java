@@ -100,6 +100,44 @@ public class Controller implements Serializable {
         Storage.save(this);
         return message;
     }
+    
+    /**
+     * Adds a member to memberList with a library card number
+     *
+     * @param name Name of new member
+     * @return String display text
+     */
+    public String addMember(String name) {
+        String message = "";
+
+        Member member = this.memberList.createMember(name);
+        message += ("New Member: " + member.getName().trim() + " created successfully.\n" +
+                "Library card number is: " + member.getLibraryCardNum() + ".\n");
+      
+        Storage.save(this, MemberIdServer.instance());
+        return message;
+    }
+
+    /**
+     * Returns the library object designated by library
+     *
+     * @param library library number
+     * @return Library object
+     */
+    Library getLib(int library) {
+        switch (library) {
+            case 1:
+                return main;
+            case 2:
+                return sister;
+            default:
+                return null;
+        }
+    }
+
+    public void addItemToLibrary(Item addThisItem, int library) {
+        getLib(library).addItem(addThisItem);
+    }
 
     /**
      * Adds items from input file to appropriate library
@@ -109,10 +147,13 @@ public class Controller implements Serializable {
      */
     public void addFileData(File file, int library) {
         Library lib = getLib(library);
-        if (file.getAbsolutePath().toLowerCase().endsWith("json")) {
+        if (file.getAbsolutePath().toLowerCase().endsWith("json"))
             addFileDataJson(file, lib);
-        } else {
+        else if (file.getAbsolutePath().toLowerCase().endsWith("xml"))
             addFileDataXml(file, lib);
+        else
+        {
+        	// invalid file type -- should be displayed to the screen.
         }
         Storage.save(this);
     }
@@ -124,7 +165,7 @@ public class Controller implements Serializable {
      * @param file File to read data from.
      * @return boolean False if file can't be read.
      */
-    public boolean addFileDataJson(File file, Library lib) {
+    private boolean addFileDataJson(File file, Library lib) {
         String id = new String();
         String type = new String();
         String name = new String();
@@ -225,7 +266,7 @@ public class Controller implements Serializable {
      * @param file File to read data from
      * @return boolean False if file can't be read
      */
-    public boolean addFileDataXml(File file, Library lib) {
+    private boolean addFileDataXml(File file, Library lib) {
         String id = new String();
         String type = new String();
         String name = new String();
@@ -316,23 +357,6 @@ public class Controller implements Serializable {
     }
 
     /**
-     * Adds a member to memberList with a library card number
-     *
-     * @param name Name of new member
-     * @return String display text
-     */
-    public String addMember(String name) {
-        String message = "";
-
-        Member member = this.memberList.createMember(name);
-        message += ("New Member: " + member.getName().trim() + " created successfully.\n" +
-                "Library card number is: " + member.getLibraryCardNum() + ".\n");
-      
-        Storage.save(this, MemberIdServer.instance());
-        return message;
-    }
-
-    /**
      * Displays items in library catalog by type
      *
      * @param library 1 = main, 2 = sister
@@ -369,8 +393,8 @@ public class Controller implements Serializable {
     public String displayMemberCheckedOutItems(int cardNumber)
     {
         String message = "";
-        Member member = this.memberList.getMember(cardNumber);
         
+        Member member = this.memberList.getMember(cardNumber);
         if (member != null)
         {
             ArrayList<String> items = member.getCheckedOutItems();
@@ -405,26 +429,5 @@ public class Controller implements Serializable {
         }
 
         return message;
-    }
-
-    /**
-     * Returns the library object designated by library
-     *
-     * @param library library number
-     * @return Library object
-     */
-    Library getLib(int library) {
-        switch (library) {
-            case 1:
-                return main;
-            case 2:
-                return sister;
-            default:
-                return null;
-        }
-    }
-
-    public void addItemToLibrary(Item addThisItem, int library) {
-        getLib(library).addItem(addThisItem);
     }
 }
