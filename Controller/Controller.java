@@ -166,10 +166,10 @@ public class Controller implements Serializable {
      * @return boolean False if file can't be read.
      */
     private boolean addFileDataJson(File file, Library lib) {
-        String id = new String();
-        String type = new String();
-        String name = new String();
-        String authorArtist = new String();
+        String id = "";
+        String type = "";
+        String name = "";
+        String authorArtist = "";
         String textLine = "";
         String keyName = "";
         String value;
@@ -267,12 +267,12 @@ public class Controller implements Serializable {
      * @return boolean False if file can't be read
      */
     private boolean addFileDataXml(File file, Library lib) {
-        String id = new String();
-        String type = new String();
-        String name = new String();
-        String author = new String();
-        String artist = new String();
-        String volume = new String();
+        String id = "";
+        String type = "";
+        String name = "";
+        String author = "";
+        String artist = "";
+        String volume = "";
         Document doc = null;
 
         try {
