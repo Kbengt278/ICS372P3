@@ -1,0 +1,12 @@
+participant User
+participant LibraryUI
+participant Controller
+participant Library
+participant Storage
+
+User->LibraryUI:Enter file data
+LibraryUI->Controller: addFileData(file, library)
+Controller->Controller: call appropriate file parsing sub-method (for Json or XML)
+Controller->Library: lib.addItem(new Item)
+Library->Library: list.put(item.getId(), item)
+Library->Storage: save changes

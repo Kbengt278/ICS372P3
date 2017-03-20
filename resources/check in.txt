@@ -1,0 +1,19 @@
+participant User
+participant LibraryUI
+participant Controller
+participant Library
+participant MemberList
+participant Storage
+
+User->LibraryUI: Choose library to use
+User->LibraryUI: Enter item ID
+User->LibraryUI: Click check in
+LibraryUI->Controller: checkIn(itemId, library)
+Controller->Library: checkIn(itemId)
+Library->Library: item.setAvailable(true);
+Library->Library: item.setDateDue(null);
+Library-->Controller: return Boolean successStatus
+Controller->MemberList: removeItem(itemId)
+Controller->Storage: save changes
+Controller-->LibraryUI: return String successMessage
+LibraryUI-->User: Item checked in successfully
