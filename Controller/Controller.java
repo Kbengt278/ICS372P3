@@ -59,7 +59,7 @@ public class Controller implements Serializable {
             if (isCheckedIn == null)
             	message += "Item " + itemId + " does not exist\n";
             else if (!isCheckedIn)
-            	message += "Item " + itemId + " is not checked in.\n";
+            	message += "Item " + itemId + " is currently checked out.\n";
             else
             {
                 member.addItem(itemId);
@@ -95,7 +95,7 @@ public class Controller implements Serializable {
             try {
                 memberList.getMemberWithItem(itemId).removeItem(itemId);
                 message += lib.toString(itemId);
-                message += "checked in successfully\n";
+                message += " checked in successfully\n";
 
             } catch (NullPointerException e) {
             	message += "Error: Item " + itemId + " is marked as checked out but no member has it checked out.\n";
@@ -404,7 +404,8 @@ public class Controller implements Serializable {
             ArrayList<String> items = member.getCheckedOutItems();
 
             Item item;
-            message += ("Checked out items of member #: " + cardNumber + "\n");
+            message += ("Items checked out by " + member.getName() + " - Member #: " + cardNumber + "\n");
+            message += "------------------------------------------------------------------------------------------------------------\n";
             for (String element : items)
             {
                 item = main.getItem(element);
