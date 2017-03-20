@@ -1,5 +1,6 @@
 package MemberList;
 
+import Items.Item;
 import Member.Member;
 import Member.MemberIdServer;
 
@@ -7,8 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- * MemberList Class
- * Creates an initial list of member objects
+ * Creates and maintains list of member objects.
  */
 public class MemberList implements Serializable {
     private HashMap<Integer, Member> memberList = new HashMap<>();
@@ -18,32 +18,38 @@ public class MemberList implements Serializable {
     }
 
     /**
-     * Creates and adds a member to memberList with a library card number
+     * Creates and adds a member to memberList with a generated library card number.
      *
-     * @param name Name of new member
-     * @return String display text
+     * @param name name of new member
+     * @return member that was added
      */
     public Member createMember(String name) {
         int id = idServer.getId();
         Member member = new Member(id, name);
-        memberList.put((Integer) id, member);
+        memberList.put(id, member);
         return member;
     }
 
     public Member getMember(int id) {
-        return memberList.get((Integer) id);
+        return memberList.get(id);
     }
 
-    public Member getMemberWithItem(String itemId) {
+    /**
+     * Get the member with this item checked out.
+     *
+     * @param item find the member who has this item
+     * @return the member who has the item
+     */
+    public Member getMemberWithItem(Item item) {
         for (Member member : memberList.values()) {
-            if (member.hasItem(itemId)) {
+            if (member.hasItem(item)) {
                 return member;
             }
         }
         return null;
     }
 
-    public int getNumberMembers() {
+    public int getNumberOfMembers() {
         return memberList.size();
     }
 }

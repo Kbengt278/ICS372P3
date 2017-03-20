@@ -16,14 +16,14 @@ public class ControllerTest {
     private Item itemCheckedOutBy1;
     private Item itemNotAvailableAndNotCheckedOut;
 
-    private Item itemBookLib1;
-    private Item itemMagazineLib1;
-    private Item itemCDLib1;
-    private Item itemDVDLib1;
-    private Item itemBookLib2;
-    private Item itemMagazineLib2;
-    private Item itemCDLib2;
-    private Item itemDVDLib2;
+    private Item itemBookAtMain;
+    private Item itemMagazineAtMain;
+    private Item itemCdAtMain;
+    private Item itemDvdAtMain;
+    private Item itemBookAtSister;
+    private Item itemMagazineAtSister;
+    private Item itemCdAtSister;
+    private Item itemDvdAtSister;
 
     @BeforeClass
     public static void setUpClass() {
@@ -38,7 +38,6 @@ public class ControllerTest {
 
         itemAvailable = new Item("itemAvailable", "item1", Item.Type.BOOK);
         itemAvailable.setAvailable(true);
-
         testController.addItemToLibrary(itemAvailable, Library.Type.MAIN);
 
         itemCheckedOutBy1 = new Item("itemCheckedOutBy1", "item2", Item.Type.BOOK);
@@ -49,37 +48,35 @@ public class ControllerTest {
         testController.addItemToLibrary(itemNotAvailableAndNotCheckedOut, Library.Type.MAIN);
         testController.getLib(Library.Type.MAIN).getItem("itemNotAvailableAndNotCheckedOut").setAvailable(false);
 
-        itemBookLib1 = new Item("Book1", "Book1", Item.Type.BOOK);
-        testController.addItemToLibrary(itemBookLib1, Library.Type.MAIN);
+        itemBookAtMain = new Item("Book1", "Book1", Item.Type.BOOK);
+        testController.addItemToLibrary(itemBookAtMain, Library.Type.MAIN);
         testController.checkOut(2, "Book1", Library.Type.MAIN);
-        itemMagazineLib1 = new Item("Magazine1", "Magazine1", Item.Type.MAGAZINE);
-        testController.addItemToLibrary(itemMagazineLib1, Library.Type.MAIN);
+        itemMagazineAtMain = new Item("Magazine1", "Magazine1", Item.Type.MAGAZINE);
+        testController.addItemToLibrary(itemMagazineAtMain, Library.Type.MAIN);
         testController.checkOut(2, "Magazine1", Library.Type.MAIN);
-        itemCDLib1 = new Item("CD1", "CD1", Item.Type.CD);
-        testController.addItemToLibrary(itemCDLib1, Library.Type.MAIN);
+        itemCdAtMain = new Item("CD1", "CD1", Item.Type.CD);
+        testController.addItemToLibrary(itemCdAtMain, Library.Type.MAIN);
         testController.checkOut(2, "CD1", Library.Type.MAIN);
-        itemDVDLib1 = new Item("DVD1", "DVD1", Item.Type.DVD);
-        testController.addItemToLibrary(itemDVDLib1, Library.Type.MAIN);
+        itemDvdAtMain = new Item("DVD1", "DVD1", Item.Type.DVD);
+        testController.addItemToLibrary(itemDvdAtMain, Library.Type.MAIN);
         testController.checkOut(2, "DVD1", Library.Type.MAIN);
 
-        itemBookLib2 = new Item("Book2", "Book2", Item.Type.BOOK);
-        testController.addItemToLibrary(itemBookLib2, Library.Type.SISTER);
+        itemBookAtSister = new Item("Book2", "Book2", Item.Type.BOOK);
+        testController.addItemToLibrary(itemBookAtSister, Library.Type.SISTER);
         testController.checkOut(2, "Book2", Library.Type.SISTER);
-        itemMagazineLib2 = new Item("Magazine2", "Magazine2", Item.Type.MAGAZINE);
-        testController.addItemToLibrary(itemMagazineLib2, Library.Type.SISTER);
+        itemMagazineAtSister = new Item("Magazine2", "Magazine2", Item.Type.MAGAZINE);
+        testController.addItemToLibrary(itemMagazineAtSister, Library.Type.SISTER);
         testController.checkOut(2, "Magazine2", Library.Type.SISTER);
-        itemCDLib2 = new Item("CD2", "CD2", Item.Type.CD);
-        testController.addItemToLibrary(itemCDLib2, Library.Type.SISTER);
+        itemCdAtSister = new Item("CD2", "CD2", Item.Type.CD);
+        testController.addItemToLibrary(itemCdAtSister, Library.Type.SISTER);
         testController.checkOut(2, "CD2", Library.Type.SISTER);
-        itemDVDLib2 = new Item("DVD2", "DVD2", Item.Type.DVD);
-        testController.addItemToLibrary(itemDVDLib2, Library.Type.SISTER);
+        itemDvdAtSister = new Item("DVD2", "DVD2", Item.Type.DVD);
+        testController.addItemToLibrary(itemDvdAtSister, Library.Type.SISTER);
         testController.checkOut(2, "DVD2", Library.Type.SISTER);
-
     }
 
     @After
     public void tearDown() throws Exception {
-
 
     }
 
@@ -120,7 +117,7 @@ public class ControllerTest {
 
         // test success
         response = testController.checkIn("itemCheckedOutBy1", Library.Type.MAIN);
-        assertTrue(response.contains("checked in successfully"));
+        assertTrue(response.contains("Checkin successful"));
     }
 
     @Test
@@ -147,7 +144,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void displayCheckedOutItems() throws Exception {
+    public void displayMemberCheckedOutItems() throws Exception {
         String response = "";
         response = testController.displayMemberCheckedOutItems(2);
         assertTrue(response.contains("Book1"));
@@ -158,21 +155,6 @@ public class ControllerTest {
         assertTrue(response.contains("Magazine2"));
         assertTrue(response.contains("CD2"));
         assertTrue(response.contains("DVD2"));
-    }
-
-    @Test
-    public void getLib() throws Exception {
-
-    }
-
-    @Test
-    public void checkLibraryCardNumber() throws Exception {
-
-    }
-
-    @Test
-    public void addItemToLibrary() throws Exception {
-
     }
 
 }

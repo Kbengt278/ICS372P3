@@ -1,7 +1,8 @@
 package Items;
 
 /**
- * Class for Book type Items
+ * Book type Items
+ * has an optional field: author
  */
 public class Book extends Item {
 
@@ -14,7 +15,7 @@ public class Book extends Item {
     public Book(String id, String name, Type type, String author) {
         super(id, name, type);
         this.author = author;
-        checkOutTimeDays = 21;
+        this.checkOutTimeDays = 21;
     }
 
     public String getAuthor() {
@@ -25,4 +26,12 @@ public class Book extends Item {
         this.author = author;
     }
 
+    @Override
+    public String toString() {
+        String message = super.toString();
+        if (author != null)
+            message += "\n -- Author: " + author;
+        message += toString2();
+        return message;
+    }
 }

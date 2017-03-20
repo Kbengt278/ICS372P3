@@ -5,16 +5,16 @@ import java.util.Calendar;
 
 /**
  * Item class is to be extended by subclasses of each type of Item.
- * It maintains protected attributes common to all types of Items.
+ * It maintains attributes common to all types of Items.
  */
 public class Item implements Serializable {
 
-    protected String id;
-    protected String name;
-    protected Type type;
-    protected boolean available;    // Available in the library -- false = checked out
-    protected Calendar dateDue;     // Due date
-    protected int checkOutTimeDays; // Number of days that item can be checked out
+    int checkOutTimeDays; // Number of days that item can be checked out
+    private String id;
+    private String name;
+    private Item.Type type;
+    private boolean available;    // Available in the library - false = checked out
+    private Calendar dateDue;     // Due date
 
     public Item() {
     }
@@ -75,22 +75,38 @@ public class Item implements Serializable {
         this.checkOutTimeDays = checkOutTimeDays;
     }
 
+    /**
+     * @return Makes a string of the attributes of the item.
+     */
     @Override
     public String toString() {
-        String message = "Item ID: " + getId() +
-                " -- Type: " + getType() +
-                " -- Name: " + getName();
-        if (dateDue != null) {
-            message += " -- Due Date: " +
-                    (dateDue.get(Calendar.MONTH) + 1) +
-                    "/" + dateDue.get(Calendar.DAY_OF_MONTH) +
-                    "/" + dateDue.get(Calendar.YEAR) + "\n";
-        }
+        return "Item ID: " + this.getId() +
+                "\n -- Type: " + this.getType() +
+                "\n -- Name: " + this.getName();
 
+    }
+
+    /**
+     * Adds more info to the item. Called by subclasses only.
+     *
+     * @return Adds the availability and due date if the item has one.
+     */
+    String toString2() {
+        String message = "";
+        if (this.isAvailable())
+            message += ("\n - Available\n");
+        else
+            message += ("\n - Checked out\n");
+        if (this.dateDue != null) {
+            message += "-- Due Date: " +
+                    (this.dateDue.get(Calendar.MONTH) + 1) +
+                    "/" + this.dateDue.get(Calendar.DAY_OF_MONTH) +
+                    "/" + this.dateDue.get(Calendar.YEAR) + "\n";
+        }
         return message;
     }
 
     public enum Type {
-        BOOK, CD, DVD, MAGAZINE;
+        BOOK, CD, DVD, MAGAZINE
     }
 }

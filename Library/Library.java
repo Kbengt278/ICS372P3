@@ -8,23 +8,25 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 /**
- * Library Class :
- * Creates a Library object. Allows items to be added to it via JSON or XML files. Allows items to
- * be checked out and checked in. Allows all items in the library catalog to be displayed by type
+ * Creates and maintains a list of items at this library.
+ * Allows items to be added to it via JSON or XML files.
+ * Allows items to be checked out and checked in.
+ * Allows all items in the library catalog to be displayed by type.
  */
 public class Library implements Serializable {
 
-    private HashMap<String, Item> list = new HashMap<>();
+    private HashMap<String, Item> itemList = new HashMap<>();
 
     public Library() {
     }
 
     /**
-     * checkOut method -- sets items available flag false, sets checkedOutBy to cardNumber,
-     * sets items DateDue to appropriate due date
+     * handles checking out an item
+     * sets the item's available flag false
+     * sets the item's setDateDue to current date plus item's checkout time
      *
-     * @param itemId - item ID to be checked out
-     * @return message to user
+     * @param itemId id of the item to check out
+     * @return null if item does not exist, false if item is not available, otherwise true
      */
     public Boolean checkOut(String itemId) {
         Item item = this.getItem(itemId);
@@ -42,13 +44,15 @@ public class Library implements Serializable {
     }
 
     /**
-     * checkIn method -- sets items available flag true, clears items checkeOutBy field
+     * handles checking in an item
+     * sets the item's available flag true
+     * sets the item's setDateDue to null
      *
-     * @param itemId - item ID to be checked in
-     * @return null if item is null; false if item is available; otherwise, true
+     * @param itemId id of the item to check in
+     * @return null if item does not exist, false if item is available, otherwise true
      */
     public Boolean checkIn(String itemId) {
-        Item item = list.get(itemId);
+        Item item = itemList.get(itemId);
         if (item == null) {
             return null;
         } else if (item.isAvailable()) {
@@ -61,46 +65,41 @@ public class Library implements Serializable {
     }
 
     /**
-     * Displays items in the Library catalog
+     * Displays items of given type in this Library's catalog.
      *
-     * @param type The type of items to display (e.g book, cd, dvd)
-     * @return String display text
+     * @param type the type of the items to display
+     * @return text to display to user
      */
-    public String displayItems(Item.Type type) {
-        String ret = "";
-        for (Item value : list.values()) {
+    public String displayItemsOfType(Item.Type type) {
+        String message = "";
+        for (Item value : itemList.values()) {
             if (type.equals(value.getType())) {
-                ret += ("Id = " + value.getId());
-                ret += (" " + value.getType().name() + " ");
-                ret += (" Name = " + value.getName());
-                if (value.isAvailable())
-                    ret += (" - Available\n");
-                else
-                    ret += (" - Checked out\n");
+                message += value.toString();
             }
         }
-        return ret;
-    }
-
-    public String toString(String itemId) {
-        Item item = getItem(itemId);
-        return item.toString();
-    }
-
-    public Item getItem(String id) {
-        return list.get(id);
+        return message;
     }
 
     /**
-     * Adds item to the list of items in this library
+     * Gets item from the list of items in this library.
+     *
+     * @param id item to get
+     * @return the item object
+     */
+    public Item getItem(String id) {
+        return itemList.get(id);
+    }
+
+    /**
+     * Adds item to the list of items in this library.
      *
      * @param item The item object to be added to list
      **/
     public void addItem(Item item) {
-        list.put(item.getId(), item);
+        itemList.put(item.getId(), item);
     }
 
     public enum Type {
-        MAIN, SISTER;
+        MAIN, SISTER
     }
 }
