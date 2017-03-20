@@ -137,7 +137,7 @@ public class ControllerTest {
     @Test
     public void testAddFileDataJson() {
         // Initialize the lib object to null
-        Library lib = new Library();
+        Library lib = new Library(Library.Type.MAIN);
         //
         // First test for a nonexistent file
         //
@@ -159,7 +159,7 @@ public class ControllerTest {
     @Test
     public void testAddFileDataXml() {
         // Initialize the lib object to null
-        Library lib = new Library();
+        Library lib = new Library(Library.Type.MAIN);
         //
         // First test for a nonexistent file
         //
