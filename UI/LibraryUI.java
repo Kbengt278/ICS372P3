@@ -190,6 +190,10 @@ public class LibraryUI extends Application {
         btAddFileData.setOnAction(e -> {
             File file = fileChooser.showOpenDialog(primaryStage);
             if (file != null) {
+
+                // TODO if file has an inappropriate extension, this will still print the file was added even if it wasn't.
+                // Need to adjust code - either to return true/false for success/failure, or adjust code here so there isn't
+                // an inconsistent message to user about it getting loaded.
                 app.addFileData(file, library);
                 text.appendText("File added: " + file.getAbsolutePath() + "\n");
             } else {
@@ -215,6 +219,8 @@ public class LibraryUI extends Application {
             if (cbMagazines.isSelected()) {
                 mask += 8;
             }
+
+            // TODO verify that we are also checking a specific library option. Can we accidentally pass a null library object?
             text.appendText(app.displayLibraryItems(library, mask));
         });
 

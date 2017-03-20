@@ -14,6 +14,7 @@ import storage.Storage;
 
 import javax.json.Json;
 import javax.json.stream.JsonParser;
+import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -153,7 +154,7 @@ public class Controller implements Serializable {
             addFileDataXml(file, lib);
         else
         {
-        	// invalid file type -- should be displayed to the screen.
+        	System.out.println("Select an appropriately formatted file with either the json or xml file extension."); // invalid file type -- should be displayed to the screen.
         }
         Storage.save(this);
     }
@@ -182,12 +183,8 @@ public class Controller implements Serializable {
             System.out.println("Couldn't find file");
             return false;
         }
-        try {
-            while (input.hasNext()) {
+        while (input.hasNext()) {
                 textLine = textLine + input.nextLine() + "\n";
-            }
-        } catch (NullPointerException e) {
-            System.out.println("Couldn't find file");
         }
         input.close();
 
@@ -347,10 +344,16 @@ public class Controller implements Serializable {
                 }
             }
         } catch (ParserConfigurationException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Could not load the XML file. Check that the file is properly formatted before trying again.");
             return false;
         } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Could not load the XML file. Try loading the file again.");
             return false;
         } catch (SAXException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Could not load the XML file. Check that the file is properly formatted before trying again.");
             return false;
         }
         return true;
@@ -366,6 +369,8 @@ public class Controller implements Serializable {
     public String displayLibraryItems(int library, int mask) {
         String message = "";
         Library lib = getLib(library);
+
+        // TODO isn't using & and then == redundant? mask is coming as int. Both will end up true.
         if ((mask & 1) == 1) {
         	message += lib.displayItems("Book");
         }

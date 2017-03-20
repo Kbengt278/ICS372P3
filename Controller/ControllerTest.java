@@ -131,7 +131,9 @@ public class ControllerTest {
         String response = "";
         response = testController.addMember("testMember");
         assertTrue(response.contains("Library card number is: 3"));
-        assertTrue(testController.checkLibraryCardNumber(3));
+
+        // TODO this is flagging checkLibraryCardNumber as not a valid method - I didn't find it anywhere in Controller either
+        // assertTrue(testController.checkLibraryCardNumber(3));
     }
 
     @Test
