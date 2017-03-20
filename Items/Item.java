@@ -81,14 +81,14 @@ public class Item implements Serializable {
 	public String toString()
 	{
 		String message = "Item ID: " + getId() +
-    	       " -- Type: " + getType() +
-               " -- Name: " + getName();
+    	                 " -- Type: " + getType() +
+                         " -- Name: " + getName();
 		if(dateDue != null)
 		{
 			message += " -- Due Date: " +
-               (dateDue.get(Calendar.MONTH) + 1) +
-               "/" + dateDue.get(Calendar.DAY_OF_MONTH)
-                + "/" + dateDue.get(Calendar.YEAR) + "\n";
+                      (dateDue.get(Calendar.MONTH) + 1) +
+                       "/" + dateDue.get(Calendar.DAY_OF_MONTH) +
+                       "/" + dateDue.get(Calendar.YEAR) + "\n";
 		}
 		
 		return message;
