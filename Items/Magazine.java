@@ -36,7 +36,7 @@ public class Magazine extends Item {
     public String toString() {
         String message = super.toString();
         if (volume != null)
-            message += "\n -- Volume: " + volume;
+            message += "- Volume: " + volume;
         message += toString2();
         return message;
     }

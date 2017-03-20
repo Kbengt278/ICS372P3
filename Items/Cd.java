@@ -30,7 +30,7 @@ public class Cd extends Item {
     public String toString() {
         String message = super.toString();
         if (artist != null)
-            message += "\n -- Artist: " + artist;
+            message += " (" + artist + ")";
         message += toString2();
         return message;
     }

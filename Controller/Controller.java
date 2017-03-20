@@ -352,15 +352,19 @@ public class Controller implements Serializable {
         	message += ("Items in Library " + lib.getLibraryType());
             message += "\n---------------------------------------------------------------------------------------------------------";
 	        if ((mask & 1) == 1) {
+	            message += "\n\nBooks\n----------";
 	            message += lib.displayItemsOfType(Item.Type.BOOK);
 	        }
 	        if ((mask & 2) == 2) {
+                message += "\n\nCDs\n----------";
 	            message += lib.displayItemsOfType(Item.Type.CD);
 	        }
 	        if ((mask & 4) == 4) {
+                message += "\n\nDVDs\n----------";
 	            message += lib.displayItemsOfType(Item.Type.DVD);
 	        }
 	        if ((mask & 8) == 8) {
+                message += "\n\nMagazines\n----------";
 	            message += lib.displayItemsOfType(Item.Type.MAGAZINE);
 	        }
 	        message += "\n---------------------------------------------------------------------------------------------------------";

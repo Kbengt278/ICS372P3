@@ -30,7 +30,7 @@ public class Book extends Item {
     public String toString() {
         String message = super.toString();
         if (author != null)
-            message += "\n -- Author: " + author;
+            message += " (" + author + ")";
         message += toString2();
         return message;
     }
