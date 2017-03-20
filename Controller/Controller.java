@@ -4,7 +4,7 @@ import Items.*;
 import Library.Library;
 import Member.Member;
 import Member.MemberIdServer;
-import MemberList.MemberList;
+import Member.MemberList;
 import Storage.Storage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

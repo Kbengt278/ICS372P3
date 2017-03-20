@@ -1,4 +1,4 @@
-package MemberList;
+package Member;
 
 import Items.Item;
 import Member.Member;
