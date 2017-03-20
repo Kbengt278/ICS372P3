@@ -1,13 +1,9 @@
 package Items;
 
-import java.io.Serializable;
-
 /**
  * Class for CD type Items.
  */
-public class Cd extends Item implements Serializable {
-    // added Ser even though
-    // don't think necessary
+public class Cd extends Item  {
 
     private String artist;
 
@@ -15,7 +11,7 @@ public class Cd extends Item implements Serializable {
         super();
     }
 
-    public Cd(String id, String name, String type, String artist) {
+    public Cd(String id, String name, Type type, String artist) {
         super(id, name, type);
         this.artist = artist;
         checkOutTimeDays = 7;

@@ -1,13 +1,9 @@
 package Items;
 
-import java.io.Serializable;
-
 /**
  * Class for Magazine type Items
  */
-public class Magazine extends Item implements Serializable {
-    // added Ser even though
-    // don't think necessary
+public class Magazine extends Item {
 
     private String volume;
 
@@ -15,13 +11,13 @@ public class Magazine extends Item implements Serializable {
         super();
     }
 
-    public Magazine(String id, String name, String type, String volume) {
+    public Magazine(String id, String name, Type type, String volume) {
         super(id, name, type);
         this.volume = volume;
         checkOutTimeDays = 7;
     }
 
-    public Magazine(String id, String name, String type) {
+    public Magazine(String id, String name, Type type) {
         super(id, name, type);
         this.volume = "";
         checkOutTimeDays = 7;
