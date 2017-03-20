@@ -31,7 +31,7 @@ public class LibraryUI extends Application {
     private final TextArea text = new TextArea();
     private final ScrollPane scrollPane = new ScrollPane();
     private final FileChooser fileChooser = new FileChooser();
-    private int library = 1;
+    private Library.Library.Type library = Library.Library.Type.MAIN;
     private Controller app = new Controller();
 
     public static void main(String[] args) {
@@ -40,7 +40,7 @@ public class LibraryUI extends Application {
 
     @Override // Override the start method in the Controller class
     public void start(Stage primaryStage) throws IOException {
-        app = storage.Storage.loadController(); // Load data from file
+        app = Storage.Storage.loadController(); // Load data from file
 
         // Create a border pane
         VBox pane = new VBox();
@@ -216,7 +216,7 @@ public class LibraryUI extends Application {
             if (cbMagazines.isSelected()) {
                 mask += 8;
             }
-            text.appendText(app.displayLibraryItems(library, mask));
+            text.appendText(app.displayLibraryItems(mask, library));
         });
 
         //
@@ -227,11 +227,11 @@ public class LibraryUI extends Application {
             public void changed(ObservableValue<? extends Toggle> ov,
                                 Toggle old_toggle, Toggle new_toggle) {
                 if (rbMain.isSelected()) {
-                    library = 1;
+                    library = Library.Library.Type.MAIN;
                 } else {
-                    library = 2;
+                    library = Library.Library.Type.SISTER;
                 }
-                if (library == 1)
+                if (library ==  Library.Library.Type.MAIN)
                     text.appendText("Main Library:\n");
                 else
                     text.appendText("Sister Library:\n");

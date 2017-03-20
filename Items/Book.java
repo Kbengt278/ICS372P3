@@ -1,21 +1,17 @@
 package Items;
 
-import java.io.Serializable;
-
 /**
  * Class for Book type Items
  */
-public class Book extends Item implements Serializable {
-    // added impl Serial
-    // even though I don't think it needs it
-    // since Item implements it
+public class Book extends Item {
+
     private String author;
 
     public Book() {
         super();
     }
 
-    public Book(String id, String name, String type, String author) {
+    public Book(String id, String name, Type type, String author) {
         super(id, name, type);
         this.author = author;
         checkOutTimeDays = 21;

@@ -5,12 +5,12 @@ import Library.Library;
 import Member.Member;
 import Member.MemberIdServer;
 import MemberList.MemberList;
+import Storage.Storage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import storage.Storage;
 
 import javax.json.Json;
 import javax.json.stream.JsonParser;
@@ -149,15 +149,14 @@ public class Controller implements Serializable {
      * @param file    File to read data from
      * @param library 1 = main, 2 = sister
      */
-    public void addFileData(File file, int library) {
+    public void addFileData(File file, Library.Type library) {
         Library lib = getLib(library);
         if (file.getAbsolutePath().toLowerCase().endsWith("json"))
             addFileDataJson(file, lib);
         else if (file.getAbsolutePath().toLowerCase().endsWith("xml"))
             addFileDataXml(file, lib);
-        else
-        {
-        	// invalid file type -- should be displayed to the screen.
+        else {
+            // invalid file type -- should be displayed to the screen.
         }
         Storage.save(this);
     }
@@ -173,7 +172,7 @@ public class Controller implements Serializable {
         String id = "";
         String type = "";
         String name = "";
-        String authorArtist = "";
+        String optionalField = "";
         String textLine = "";
         String keyName = "";
         String value;
@@ -210,16 +209,16 @@ public class Controller implements Serializable {
                         if (id != null && name != null && type != null && !id.equals("") && !name.equals("") && !type.equals("")) {
                             switch (type.toLowerCase()) {
                                 case "cd":
-                                    lib.addItem(new Cd(id, name, type, authorArtist));
+                                    lib.addItem(new Cd(id, name, Item.Type.CD, optionalField));
                                     break;
                                 case "book":
-                                    lib.addItem(new Book(id, name, type, authorArtist));
+                                    lib.addItem(new Book(id, name, Item.Type.BOOK, optionalField));
                                     break;
                                 case "magazine":
-                                    lib.addItem(new Magazine(id, name, type));
+                                    lib.addItem(new Magazine(id, name, Item.Type.MAGAZINE, optionalField));
                                     break;
                                 case "dvd":
-                                    lib.addItem(new Dvd(id, name, type));
+                                    lib.addItem(new Dvd(id, name, Item.Type.DVD));
                                     break;
                             }
                         } else {
@@ -254,7 +253,8 @@ public class Controller implements Serializable {
                             break;
                         case "item_artist":
                         case "item_author":
-                            authorArtist = value;
+                        case "item_volume":
+                            optionalField = value;
                             break;
                     }
                     break;
@@ -331,16 +331,16 @@ public class Controller implements Serializable {
                     if (id != null && name != null && type != null && !id.equals("") && !name.equals("") && !type.equals("")) {
                         switch (type.toLowerCase()) {
                             case "cd":
-                                lib.addItem(new Cd(id, name, "CD", artist));
+                                lib.addItem(new Cd(id, name, Item.Type.CD, artist));
                                 break;
                             case "book":
-                                lib.addItem(new Book(id, name, "Book", author));
+                                lib.addItem(new Book(id, name, Item.Type.BOOK, author));
                                 break;
                             case "magazine":
-                                lib.addItem(new Magazine(id, name, "Magazine", volume));
+                                lib.addItem(new Magazine(id, name, Item.Type.MAGAZINE, volume));
                                 break;
                             case "dvd":
-                                lib.addItem(new Dvd(id, "DVD", type));
+                                lib.addItem(new Dvd(id, name, Item.Type.DVD));
                                 break;
                         }
                     } else {
@@ -361,29 +361,116 @@ public class Controller implements Serializable {
     }
 
     /**
+     * Adds a member to memberList with a library card number
+     *
+     * @param name Name of new member
+     * @return String display text
+     */
+    public String addMember(String name) {
+        String message = "";
+
+        Member member = this.memberList.createMember(name);
+        message += ("New Member: " + member.getName().trim() + " created successfully.\n" +
+                "Library card number is: " + member.getLibraryCardNum() + ".\n");
+
+        Storage.save(this, MemberIdServer.instance());
+        return message;
+    }
+
+    /**
+     * Adds item to member's checkedOut list
+     * Sets item's available flag false
+     * Sets item's DateDue to appropriate due date
+     * Sets checkedOutBy to cardNumber
+     *
+     * @param cardNumber Member's id number
+     * @param itemId     ID of item to check out
+     * @param library    Library to check item out of
+     * @return String    display text
+     */
+    public String checkOut(int cardNumber, String itemId, Library.Type library) {
+        String ret = "";
+        Library lib = getLib(library);
+        Boolean isCheckedIn = lib.checkOut(itemId);
+        Member member = this.memberList.getMember(cardNumber);
+
+        if (member != null) {
+            if (isCheckedIn == null) {
+                ret += "Item " + itemId + " does not exist\n";
+            } else if (!isCheckedIn) {
+                ret += "Item " + itemId + " is not checked in.\n";
+            } else {
+                memberList.getMember(cardNumber).addItem(itemId);
+                ret += lib.toString(itemId);
+                ret += "checked out successfully. Due date is ";
+                Calendar dueDate = lib.getDueDate(itemId, lib);
+                ret += (dueDate.get(Calendar.MONTH) + 1)
+                        + "/" + dueDate.get(Calendar.DAY_OF_MONTH)
+                        + "/" + dueDate.get(Calendar.YEAR) + ".\n";
+            }
+        } else {
+            ret += "Library card number " + cardNumber + " is invalid\n";
+        }
+        Storage.save(this);
+        return ret;
+    }
+
+    /**
+     * Removes item from member's checkedOut list
+     * Sets item's available flag true
+     * Clears items checkedOutBy field
+     *
+     * @param itemId  ID of item to check out
+     * @param library Library to check item into
+     * @return String    display text
+     */
+    public String checkIn(String itemId, Library.Type library) {
+        String message = "";
+        Library lib = getLib(library);
+        Boolean isCheckedOut = lib.checkIn(itemId);
+
+        if (isCheckedOut == null)
+            message += "Item " + itemId + " does not exist\n";
+        else if (!isCheckedOut)
+            message += "Item " + itemId + " is not checked out.\n";
+        else {
+            try {
+                memberList.getMemberWithItem(itemId).removeItem(itemId);
+                message += lib.toString(itemId);
+                message += "checked in successfully\n";
+
+            } catch (NullPointerException e) {
+                message += "Error: Item " + itemId + " is marked as checked out but no member has it checked out.\n";
+            }
+        }
+        Storage.save(this);
+        return message;
+    }
+
+    /**
      * Displays items in library catalog by type
      *
      * @param library 1 = main, 2 = sister
      * @param mask    Mask of types to display 1 = book, 2 = cd, 4 = dvd, 8 = magazine
      * @return String display text
      */
-    public String displayLibraryItems(int library, int mask) {
+    public String displayLibraryItems(int mask, Library.Type library) {
         String message = "";
         Library lib = getLib(library);
         if ((mask & 1) == 1) {
-        	message += lib.displayItems("Book");
+            message += lib.displayItems(Item.Type.BOOK);
         }
         if ((mask & 2) == 2) {
-        	message += lib.displayItems("CD");
+            message += lib.displayItems(Item.Type.CD);
         }
         if ((mask & 4) == 4) {
-        	message += lib.displayItems("DVD");
+            message += lib.displayItems(Item.Type.DVD);
         }
         if ((mask & 8) == 8) {
-        	message += lib.displayItems("Magazine");
+            message += lib.displayItems(Item.Type.MAGAZINE);
         }
         if (message.equals("")) {
-        	message += "No items in this library.\n";
+            message += "No items in this library.\n";
         }
         return message;
     }
@@ -394,13 +481,11 @@ public class Controller implements Serializable {
      * @param cardNumber Member's library card number
      * @return String display text
      */
-    public String displayMemberCheckedOutItems(int cardNumber)
-    {
+    public String displayMemberCheckedOutItems(int cardNumber) {
         String message = "";
-        
+
         Member member = this.memberList.getMember(cardNumber);
-        if (member != null)
-        {
+        if (member != null) {
             ArrayList<String> items = member.getCheckedOutItems();
 
             Item item;
@@ -420,7 +505,27 @@ public class Controller implements Serializable {
             }
         } else
         	message += ("Library card number " + cardNumber + " is invalid\n");
-
         return message;
+    }
+
+    /**
+     * Returns the library object designated by library
+     *
+     * @param library library number
+     * @return Library object
+     */
+    public Library getLib(Library.Type library) {
+        switch (library) {
+            case MAIN:
+                return main;
+            case SISTER:
+                return sister;
+            default:
+                return null;
+        }
+    }
+
+    public void addItemToLibrary(Item addThisItem, Library.Type library) {
+        getLib(library).addItem(addThisItem);
     }
 }
