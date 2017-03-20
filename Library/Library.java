@@ -1,7 +1,8 @@
 package Library;
 
 
-import Items.Item;
+import Items.*;
+import Member.Member;
 import java.util.Calendar;
 import java.io.*;
 import java.util.HashMap;
@@ -20,18 +21,21 @@ public class Library implements Serializable {
 
     /**
      * checkOut method -- sets items available flag false, sets checkedOutBy to cardNumber,
-     * sets items DateDue to appropriate due date
+     * sets items DateDue to approprate due date
      * 
      * @param itemId - item ID to be checked out
+     * @param member
      * @return message to user
      */
-    public Boolean checkOut(String itemId) {
+    public Boolean checkOut(String itemId)
+    {
         Item item = this.getItem(itemId);
-        if (item == null) {
+        if (item == null)
             return null;
-        } else if (!item.isAvailable()) {
+        else if (!item.isAvailable())
             return false;
-        } else {
+        else
+        {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
             item.setAvailable(false);
@@ -64,12 +68,12 @@ public class Library implements Serializable {
      * @param type The type of items to display (e.g book, cd, dvd)
      * @return String display text
      */
-    public String displayItems(Item.Type type) {
+    public String displayItems(String type) {
         String ret = "";
         for (Item value : list.values()) {
-            if (type.equals(value.getType())) {
+            if (type.equalsIgnoreCase(value.getType())) {
                 ret += ("Id = " + value.getId());
-                ret += (" " + value.getType().name() + " ");
+                ret += (" " + value.getType() + " ");
                 ret += (" Name = " + value.getName());
                 if (value.isAvailable())
                     ret += (" - Available\n");
@@ -113,14 +117,11 @@ public class Library implements Serializable {
     public int size() {
     	return list.size();
     }
+    
 
     public String toString(String itemId)
     {
         Item item = getItem(itemId);
         return item.toString();
-    }
-
-    public enum Type{
-        MAIN, SISTER;
     }
 }

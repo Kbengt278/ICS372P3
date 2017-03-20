@@ -2,6 +2,7 @@ package MemberList;
 
 import Member.Member;
 import Member.MemberIdServer;
+import storage.Storage;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -12,21 +13,22 @@ import java.util.HashMap;
  */
 public class MemberList implements Serializable {
     private HashMap<Integer, Member> memberList = new HashMap<>();
-    private MemberIdServer idServer = MemberIdServer.instance();
+    private MemberIdServer iDserver = MemberIdServer.instance();
 
     public MemberList() {
     }
-
+    
     /**
      * Creates and adds a member to memberList with a library card number
      *
      * @param name Name of new member
      * @return String display text
      */
-    public Member createMember(String name) {
-        int id = idServer.getId();
-        Member member = new Member(id, name);
-        memberList.put((Integer) id, member);
+    public Member createMember(String name)
+    {
+    	int id = iDserver.getId();
+	    Member member = new Member(id, name);
+	    memberList.put((Integer) id, member);
         return member;
     }
 
@@ -36,7 +38,7 @@ public class MemberList implements Serializable {
 
     public Member getMemberWithItem(String itemId) {
         for (Member member : memberList.values()) {
-            if (member.hasItem(itemId)) {
+            if(member.hasItem(itemId)){
                 return member;
             }
         }
