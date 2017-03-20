@@ -131,7 +131,8 @@ public class Library implements Serializable {
     public int size() {
     	return list.size();
     }
-    
+
+    // Prints the
     public String toString(String itemId, Library library) {
         Library lib = library;
         Item item = lib.getItem(itemId);
