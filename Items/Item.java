@@ -80,13 +80,18 @@ public class Item implements Serializable {
 	@Override
 	public String toString()
 	{
-		return "Id = " + getId() +
+		String message = "Id = " + getId() +
     	       " " + getType() + " " +
-               " Name = " + getName() +
-               " Due Date = " +
-               (getDateDue().get(Calendar.MONTH) + 1) +
-               "/" + getDateDue().get(Calendar.DAY_OF_MONTH)
-                + "/" + getDateDue().get(Calendar.YEAR) + "\n";
+               " Name = " + getName();
+		if(dateDue != null)
+		{
+			message += " Due Date = " +
+               (dateDue.get(Calendar.MONTH) + 1) +
+               "/" + dateDue.get(Calendar.DAY_OF_MONTH)
+                + "/" + dateDue.get(Calendar.YEAR) + "\n";
+		}
+		
+		return message;
 	}
     
 
