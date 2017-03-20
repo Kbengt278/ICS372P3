@@ -48,9 +48,7 @@ public class Member implements Serializable {
      * @param item the item to remove
      */
     public void removeItem(Item item) {
-        System.out.println(checkedOutItems.toString());
         checkedOutItems.remove(item);
-        System.out.println(checkedOutItems.toString());
     }
 
     /**

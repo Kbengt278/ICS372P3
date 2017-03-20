@@ -122,7 +122,7 @@ public class Controller implements Serializable {
      * @param lib  library where the item is
      * @return false if file can't be read
      */
-    private boolean addFileDataJson(File file, Library lib) {
+    boolean addFileDataJson(File file, Library lib) {
         String id = "";
         String type = "";
         String name = "";
@@ -227,7 +227,7 @@ public class Controller implements Serializable {
      * @param lib  library where the item is
      * @return false if file can't be read
      */
-    private boolean addFileDataXml(File file, Library lib) {
+    boolean addFileDataXml(File file, Library lib) {
         String id = null;
         String type = null;
         String name = null;

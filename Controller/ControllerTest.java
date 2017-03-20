@@ -7,6 +7,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ControllerTest {
@@ -28,13 +31,16 @@ public class ControllerTest {
     @BeforeClass
     public static void setUpClass() {
         testController = new Controller();
-
         testController.addMember("Member 1");
         testController.addMember("Member 2");
     }
 
     @Before
     public void setUp() throws Exception {
+//        Path path = Paths.get(System.getProperty("user.dir") + "/ControllerData.bin");
+//        Files.deleteIfExists(path);
+//        path = Paths.get(System.getProperty("user.dir") + "/MemberServerData.bin");
+//        Files.deleteIfExists(path);
 
         itemAvailable = new Item("itemAvailable", "item1", Item.Type.BOOK);
         itemAvailable.setAvailable(true);
@@ -77,7 +83,10 @@ public class ControllerTest {
 
     @After
     public void tearDown() throws Exception {
-
+//        Path path = Paths.get(System.getProperty("user.dir") + "/ControllerData.bin");
+//        Files.delete(path);
+//        path = Paths.get(System.getProperty("user.dir") + "/MemberServerData.bin");
+//        Files.deleteIfExists(path);
     }
 
     @Test
@@ -126,11 +135,53 @@ public class ControllerTest {
     }
 
     @Test
+    public void testAddFileDataJson() {
+        // Initialize the lib object to null
+        Library lib = new Library();
+        //
+        // First test for a nonexistent file
+        //
+        File file = new File("TestFileDoesNotExist.json");
+        testController.addFileDataJson(file, lib);
+        //
+        // Now test with a valid file that has three entries that have errors :
+        // 1) No ID (ID = "")
+        // 2) Invalid type = VHS
+        // 3) Name = null (No name field)
+        // It then checks that 8 items were added
+        //
+        file = new File(System.getProperty("user.dir") + "/Test.json");
+        testController.addFileDataJson(file, lib);
+        assertEquals(8, lib.size());
+        assertEquals("The Stand", lib.getItem("1adf5").getName());
+    }
+
+    @Test
+    public void testAddFileDataXml() {
+        // Initialize the lib object to null
+        Library lib = new Library();
+        //
+        // First test for a nonexistent file
+        //
+        File file = new File("TestFileDoesNotExist.xml");
+        testController.addFileDataXml(file, lib);
+        //
+        // Now test with a valid file that has three entries that have errors :
+        // 1) No ID (ID = "")
+        // 2) Invalid type = VHS
+        // 3) Name = null (No name field)
+        // It then checks that 4 items were added
+        //
+        file = new File("Test.xml");
+        testController.addFileDataXml(file, lib);
+        assertEquals("Number of items added is incorrect: ", 4, lib.size());
+    }
+
+    @Test
     public void addMember() throws Exception {
         String response = "";
         response = testController.addMember("testMember");
         assertTrue(response.contains("Library card number is: 3"));
-        //       assertTrue(testController.checkLibraryCardNumber(3));
     }
 
     @Test

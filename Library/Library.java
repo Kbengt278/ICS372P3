@@ -99,6 +99,10 @@ public class Library implements Serializable {
         itemList.put(item.getId(), item);
     }
 
+    public int size() {
+        return itemList.size();
+    }
+
     public enum Type {
         MAIN, SISTER
     }
