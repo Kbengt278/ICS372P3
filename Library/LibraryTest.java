@@ -21,7 +21,7 @@ public class LibraryTest {
 
     @Before
     public void setUp() throws Exception {
-        libraryTest = new Library();
+        libraryTest = new Library(Library.Type.MAIN);
 
         itemAvailable = new Item("itemAvailable", "item1", Item.Type.BOOK);
         itemAvailable.setAvailable(true);

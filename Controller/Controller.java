@@ -29,8 +29,8 @@ import java.util.Scanner;
  */
 
 public class Controller implements Serializable {
-    private Library main = new Library();
-    private Library sister = new Library();
+    private Library main = new Library(Library.Type.MAIN);
+    private Library sister = new Library(Library.Type.SISTER);
     private MemberList memberList = new MemberList();
 
     public Controller() {
@@ -52,16 +52,16 @@ public class Controller implements Serializable {
         Member member = this.memberList.getMember(cardNumber);
         if (member != null) {
             if (isCheckedIn == null)
-                message += "Item " + itemId + " does not exist\n";
+                message += "\n\n***** Item " + itemId + " does not exist *****";
             else if (!isCheckedIn)
-                message += "Item " + itemId + " is currently checked out.\n";
+                message += "\n\n***** Item " + itemId + " is currently checked out. *****";
             else {
                 member.addItem(lib.getItem(itemId));
-                message += "Checkout successful: \n";
+                message += "\n\n***** Checkout Successful *****";
                 message += lib.getItem(itemId).toString();
             }
         } else
-            message += "Library card number " + cardNumber + " is invalid\n";
+            message += "\n\n***** Library card number " + cardNumber + " is invalid *****";
 
         Storage.save(this);
         return message;
@@ -80,16 +80,16 @@ public class Controller implements Serializable {
         Boolean isCheckedOut = lib.checkIn(itemId);
 
         if (isCheckedOut == null)
-            message += "Item " + itemId + " does not exist\n";
+            message += "\n\n***** Item " + itemId + " does not exist *****";
         else if (!isCheckedOut)
-            message += "Item " + itemId + " is not checked out.\n";
+            message += "\n\n***** Item " + itemId + " is not checked out. *****";
         else {
             try {
                 memberList.getMemberWithItem(lib.getItem(itemId)).removeItem(lib.getItem(itemId));
-                message += "Checkin successful:\n";
+                message += "\n\n***** Checkin Successful *****";
                 message += lib.getItem(itemId).toString();
             } catch (NullPointerException e) {
-                message += "Error: Item " + itemId + " is marked as checked out but no member has it checked out.\n";
+                message += "\n\n***** Error: Item " + itemId + " is marked as checked out but no member has it checked out. *****";
             }
         }
         Storage.save(this);
@@ -176,8 +176,8 @@ public class Controller implements Serializable {
                                     break;
                             }
                         } else {
-                            System.out.println("Invalid entry data: ID = " + id + " , " +
-                                    "Type = " + type + "' " + "Name = " + name + "\n");
+                            System.out.println("\nInvalid entry data: ID = " + id + " , " +
+                                    "Type = " + type + "' " + "Name = " + name);
                         }
 
                     }
@@ -301,8 +301,8 @@ public class Controller implements Serializable {
                                 break;
                         }
                     } else {
-                        System.out.println("Invalid entry data: ID = " + id + " , " +
-                                "Type = " + type + "' " + "Name = " + name + "\n");
+                        System.out.println("\nInvalid entry data: ID = " + id + " , " +
+                                "Type = " + type + "' " + "Name = " + name);
                     }
 
                 }
@@ -327,8 +327,8 @@ public class Controller implements Serializable {
         String message = "";
 
         Member member = this.memberList.createMember(name);
-        message += ("New Member: " + member.getName().trim() + " created successfully.\n" +
-                "Library card number is: " + member.getLibraryCardNumber() + ".\n");
+        message += ("\n\n***** New Member: " + member.getName().trim() + " Created *****" +
+                "\n-- Library card number is: " + member.getLibraryCardNumber());
 
         Storage.save(this, MemberIdServer.instance());
         return message;
@@ -344,20 +344,26 @@ public class Controller implements Serializable {
     public String displayLibraryItems(int mask, Library.Type library) {
         String message = "";
         Library lib = getLib(library);
-        if ((mask & 1) == 1) {
-            message += lib.displayItemsOfType(Item.Type.BOOK);
+        if (mask == 0) {
+            message += "\n\n***** No items in this library. *****";
         }
-        if ((mask & 2) == 2) {
-            message += lib.displayItemsOfType(Item.Type.CD);
-        }
-        if ((mask & 4) == 4) {
-            message += lib.displayItemsOfType(Item.Type.DVD);
-        }
-        if ((mask & 8) == 8) {
-            message += lib.displayItemsOfType(Item.Type.MAGAZINE);
-        }
-        if (message.equals("")) {
-            message += "No items in this library.\n";
+        else
+        {
+        	message += ("Items in Library " + lib.getLibraryType());
+            message += "\n---------------------------------------------------------------------------------------------------------";
+	        if ((mask & 1) == 1) {
+	            message += lib.displayItemsOfType(Item.Type.BOOK);
+	        }
+	        if ((mask & 2) == 2) {
+	            message += lib.displayItemsOfType(Item.Type.CD);
+	        }
+	        if ((mask & 4) == 4) {
+	            message += lib.displayItemsOfType(Item.Type.DVD);
+	        }
+	        if ((mask & 8) == 8) {
+	            message += lib.displayItemsOfType(Item.Type.MAGAZINE);
+	        }
+	        message += "\n---------------------------------------------------------------------------------------------------------";
         }
         return message;
     }
@@ -375,13 +381,14 @@ public class Controller implements Serializable {
         if (member != null) {
             ArrayList<Item> items = member.getCheckedOutItems();
 
-            message += ("Items checked out by " + member.getName() + " - Member #: " + cardNumber + "\n");
-            message += "------------------------------------------------------------------------------------------------------------\n";
+            message += ("Items checked out by " + member.getName() + " - Member #: " + cardNumber);
+            message += "\n---------------------------------------------------------------------------------------------------------";
             for (Item item : items) {
-                message += item.toString();
+                message += "\n" + item.toString();
             }
+            message += "\n---------------------------------------------------------------------------------------------------------";
         } else
-            message += ("Library card number " + cardNumber + " is invalid\n");
+            message += ("\n\n***** Library card number " + cardNumber + " is invalid *****");
         return message;
     }
 

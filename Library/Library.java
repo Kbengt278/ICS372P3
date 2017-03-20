@@ -16,8 +16,10 @@ import java.util.HashMap;
 public class Library implements Serializable {
 
     private HashMap<String, Item> itemList = new HashMap<>();
+    private Type libraryType = null;
 
-    public Library() {
+	public Library(Type type) {
+    	this.libraryType = type;
     }
 
     /**
@@ -74,7 +76,7 @@ public class Library implements Serializable {
         String message = "";
         for (Item value : itemList.values()) {
             if (type.equals(value.getType())) {
-                message += value.toString();
+                message += "\n" + value.toString();
             }
         }
         return message;
@@ -89,7 +91,15 @@ public class Library implements Serializable {
     public Item getItem(String id) {
         return itemList.get(id);
     }
-
+    
+    /**
+     * Gets library type (main or sister)
+     * @return Main or Sister
+     */
+    public Type getLibraryType() {
+		return libraryType;
+	}
+    
     /**
      * Adds item to the list of items in this library.
      *
