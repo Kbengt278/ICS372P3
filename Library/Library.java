@@ -2,8 +2,9 @@ package Library;
 
 
 import Items.Item;
+
+import java.io.Serializable;
 import java.util.Calendar;
-import java.io.*;
 import java.util.HashMap;
 
 /**
@@ -21,7 +22,7 @@ public class Library implements Serializable {
     /**
      * checkOut method -- sets items available flag false, sets checkedOutBy to cardNumber,
      * sets items DateDue to appropriate due date
-     * 
+     *
      * @param itemId - item ID to be checked out
      * @return message to user
      */
@@ -39,13 +40,14 @@ public class Library implements Serializable {
             return true;
         }
     }
+
     /**
      * checkIn method -- sets items available flag true, clears items checkeOutBy field
+     *
      * @param itemId - item ID to be checked in
      * @return null if item is null; false if item is available; otherwise, true
      */
-    public Boolean checkIn(String itemId)
-    {
+    public Boolean checkIn(String itemId) {
         Item item = list.get(itemId);
         if (item == null) {
             return null;
@@ -79,48 +81,26 @@ public class Library implements Serializable {
         }
         return ret;
     }
-    
+
+    public String toString(String itemId) {
+        Item item = getItem(itemId);
+        return item.toString();
+    }
+
     public Item getItem(String id) {
         return list.get(id);
     }
 
     /**
-    * Adds item to the list
-    *
-    * @param item The item object to be added to list
+     * Adds item to the list of items in this library
+     *
+     * @param item The item object to be added to list
      **/
     public void addItem(Item item) {
         list.put(item.getId(), item);
     }
 
-
-    /**
-     * Returns the due date of the item.
-     * 
-     * @param itemId
-     * @param library
-     * @return due date
-     */
-    public Calendar getDueDate(String itemId) {
-        Item item = getItem(itemId);
-        return item.getDateDue();
-    }
-    
-    /**
-     * 
-     * @return size of library HashMap
-     */
-    public int size() {
-    	return list.size();
-    }
-
-    public String toString(String itemId)
-    {
-        Item item = getItem(itemId);
-        return item.toString();
-    }
-
-    public enum Type{
+    public enum Type {
         MAIN, SISTER;
     }
 }
