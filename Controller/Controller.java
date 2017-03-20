@@ -345,7 +345,7 @@ public class Controller implements Serializable {
         String message = "";
         Library lib = getLib(library);
         if (mask == 0) {
-            message += "\n\n***** No items in this library. *****";
+            message += "\n\n***** No Item Type Selected *****";
         }
         else
         {
