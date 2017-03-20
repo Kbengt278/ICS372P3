@@ -77,4 +77,17 @@ public class Item implements Serializable {
         this.checkOutTimeDays = checkOutTimeDays;
     }
 
+	@Override
+	public String toString()
+	{
+		return "Id = " + getId() +
+    	       " " + getType() + " " +
+               " Name = " + getName() +
+               " Due Date = " +
+               (getDateDue().get(Calendar.MONTH) + 1) +
+               "/" + getDateDue().get(Calendar.DAY_OF_MONTH)
+                + "/" + getDateDue().get(Calendar.YEAR) + "\n";
+	}
+    
+
 }

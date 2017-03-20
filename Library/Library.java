@@ -27,34 +27,22 @@ public class Library implements Serializable {
      * @param member
      * @return message to user
      */
-    public String checkOut(String itemId, Member member)
+    public Boolean checkOut(String itemId)
     {
-    	String message = "";
-        Item item = list.get(itemId);
-        
+        Item item = this.getItem(itemId);
         if (item == null)
-        	message += ("Item " + itemId + " does not exist\n");
+            return null;
         else if (!item.isAvailable())
-        	message += ("Item " + itemId + " is already checked out.\n");
+            return false;
         else
         {
-            member.addItem(itemId);
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
             item.setAvailable(false);
             item.setDateDue(cal);
-            
-            message += ("Item " + itemId + " "
-                    + item.getType() + " : "
-                    + item.getName() + "\n"
-                    + "checked out successfully. Due date is "
-                    + (item.getDateDue().get(Calendar.MONTH) + 1)
-                    + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
-                    + "/" + item.getDateDue().get(Calendar.YEAR) + ".\n");
+            return true;
         }
-        return message;
     }
-    
     /**
      * checkIn method -- sets items available flag true, clears items checkeOutBy field
      * @param itemId - item ID to be checked in
@@ -109,12 +97,16 @@ public class Library implements Serializable {
         list.put(item.getId(), item);
     }
 
-    //
-    // Returns due date of item
-    //
-    public Calendar getDueDate(String itemId, Library library) {
-        Library lib = library;
-        Item item = lib.getItem(itemId);
+
+    /**
+     * Returns the due date of the item.
+     * 
+     * @param itemId
+     * @param library
+     * @return due date
+     */
+    public Calendar getDueDate(String itemId) {
+        Item item = getItem(itemId);
         return item.getDateDue();
     }
     
@@ -126,11 +118,10 @@ public class Library implements Serializable {
     	return list.size();
     }
     
-    public String toString(String itemId, Library library) {
-        Library lib = library;
-        Item item = lib.getItem(itemId);
-        return ("Item " + itemId + " "
-                + item.getType() + " : "
-                + item.getName() + "\n");
+
+    public String toString(String itemId)
+    {
+        Item item = getItem(itemId);
+        return item.toString();
     }
 }

@@ -48,22 +48,26 @@ public class Controller implements Serializable {
      * @param library    Library to check item out of
      * @return String    display text
      */
-    public String checkOut(int cardNumber, String itemId, int library)
-    {
-    	String message = "";
-    	Member member = this.memberList.getMember(cardNumber);
-    	//check if card number is valid
+    public String checkOut(int cardNumber, String itemId, int library) {
+        String message = "";
+        Library lib = getLib(library);
+        Boolean isCheckedIn = lib.checkOut(itemId);
+        
+        Member member = this.memberList.getMember(cardNumber);
         if (member != null)
         {
-            Library lib = getLib(library);
-            // check that library isn't null. Just to be safe.
-            if(lib == null)
-            	message += ("Library value is invalid\n");
+            if (isCheckedIn == null)
+            	message += "Item " + itemId + " does not exist\n";
+            else if (!isCheckedIn)
+            	message += "Item " + itemId + " is not checked in.\n";
             else
-            	message = lib.checkOut(itemId, member);
+            {
+                member.addItem(itemId);
+                message += "Checkout successful: " + lib.toString(itemId);
+            }
         } else
-        	message += ("Library card number " + cardNumber + " is invalid\n");
-            
+        	message += "Library card number " + cardNumber + " is invalid\n";
+        
         Storage.save(this);
         return message;
     }
@@ -90,7 +94,7 @@ public class Controller implements Serializable {
         {
             try {
                 memberList.getMemberWithItem(itemId).removeItem(itemId);
-                message += lib.toString(itemId, lib);
+                message += lib.toString(itemId);
                 message += "checked in successfully\n";
 
             } catch (NullPointerException e) {
@@ -401,32 +405,20 @@ public class Controller implements Serializable {
 
             Item item;
             message += ("Checked out items of member #: " + cardNumber + "\n");
-            for (String element : items) {
+            for (String element : items)
+            {
                 item = main.getItem(element);
                 if (item != null) {
-                	message += "Id = " + item.getId();
-                	message += " " + item.getType() + " ";
-                	message += " Name = " + item.getName();
-                	message += " Due Date = "
-                            + (item.getDateDue().get(Calendar.MONTH) + 1)
-                            + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
-                            + "/" + item.getDateDue().get(Calendar.YEAR) + "\n";
+                	message += item.toString();
                     continue;
                 }
+                
                 item = sister.getItem(element);
-                if (item != null) {
-                	message += "Id = " + item.getId();
-                	message += " " + item.getType() + " ";
-                    message += " Name = " + item.getName();
-                    message += " Due Date = "
-                            + (item.getDateDue().get(Calendar.MONTH) + 1)
-                            + "/" + item.getDateDue().get(Calendar.DAY_OF_MONTH)
-                            + "/" + item.getDateDue().get(Calendar.YEAR) + "\n";
-                }
+                if (item != null)
+                	message += item.toString();
             }
-        } else {
+        } else
         	message += ("Library card number " + cardNumber + " is invalid\n");
-        }
 
         return message;
     }

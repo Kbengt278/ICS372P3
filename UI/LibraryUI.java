@@ -127,6 +127,7 @@ public class LibraryUI extends Application {
         Scene scene = new Scene(pane);
         primaryStage.setTitle("Library"); // Set the stage title
         primaryStage.setHeight(700);
+        primaryStage.setWidth(550);
         primaryStage.setScene(scene); // Place the scene in the stage
         primaryStage.show(); // Display the stage
 
