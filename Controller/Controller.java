@@ -109,7 +109,7 @@ public class Controller implements Serializable {
         else if (file.getAbsolutePath().toLowerCase().endsWith("xml"))
             addFileDataXml(file, lib);
         else {
-            // invalid file type -- should be displayed to the screen.
+            System.out.println("Error: Invalid file type entered.");
         }
         Storage.save(this);
     }
@@ -129,7 +129,7 @@ public class Controller implements Serializable {
         String optionalField = "";
         String textLine = "";
         String keyName = "";
-        String value;
+        String value = "";
         boolean startArray = false;
 
         Scanner input = null;
@@ -174,19 +174,22 @@ public class Controller implements Serializable {
                                 case "dvd":
                                     lib.addItem(new Dvd(id, name, Item.Type.DVD));
                                     break;
+                                default:
+                                    System.out.println("\nInvalid type in entry: ID = " + id + " , " +
+                                            "Type = " + type + ", " + "Name = " + name);
+                                    break;
                             }
                         } else {
-                            System.out.println("\nInvalid entry data: ID = " + id + " , " +
-                                    "Type = " + type + "' " + "Name = " + name);
+                            System.out.println("\nMissing data in entry: ID = " + id + " , " +
+                                    "Type = " + type + ", " + "Name = " + name);
                         }
-
                     }
                     break;
                 case START_OBJECT:
-                    id = null;
-                    name = null;
-                    type = null;
-                    optionalField = null;
+                    id = "";
+                    name = "";
+                    type = "";
+                    optionalField = "";
                 case VALUE_FALSE:
                 case VALUE_NULL:
                 case VALUE_TRUE:
@@ -228,19 +231,18 @@ public class Controller implements Serializable {
      * @return false if file can't be read
      */
     boolean addFileDataXml(File file, Library lib) {
-        String id = null;
-        String type = null;
-        String name = null;
-        String author = null;
-        String artist = null;
-        String volume = null;
+        String id = "";
+        String type = "";
+        String name = "";
+        String author = "";
+        String artist = "";
+        String volume = "";
         Document doc = null;
 
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(file);
-
             doc.getDocumentElement().normalize();
 
             NodeList nList = doc.getElementsByTagName("Item");
@@ -249,42 +251,26 @@ public class Controller implements Serializable {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
-                    id = null;
-                    type = null;
-                    name = null;
-                    author = null;
-                    artist = null;
-                    volume = null;
-                    try {
-                        id = eElement.getAttribute("id");
-                    } catch (NullPointerException e) {
-                    }
-                    try {
-                        type = eElement.getAttribute("type");
-                    } catch (NullPointerException e) {
-                    }
-                    try {
-                        name = eElement.getElementsByTagName("Name").item(0).getTextContent();
-                    } catch (NullPointerException e) {
-                    }
-                    try {
-                        if (type.toLowerCase().equals("book"))
-                            author = eElement.getElementsByTagName("Author").item(0).getTextContent();
-                    } catch (NullPointerException e) {
-                        author = "";
-                    }
-                    try {
-                        if (type.toLowerCase().equals("cd"))
-                            artist = eElement.getElementsByTagName("Artist").item(0).getTextContent();
-                    } catch (NullPointerException e) {
-                        artist = "";
-                    }
-                    try {
-                        if (type.toLowerCase().equals("magazine"))
-                            volume = eElement.getElementsByTagName("Volume").item(0).getTextContent();
-                    } catch (NullPointerException e) {
-                        volume = "";
-                    }
+                    id = "";
+                    type = "";
+                    name = "";
+                    author = "";
+                    artist = "";
+                    volume = "";
+
+                    id = eElement.getAttribute("id");
+                    type = eElement.getAttribute("type");
+                    name = eElement.getElementsByTagName("Name").item(0).getTextContent();
+                    // author field is optional
+                    if (type.toLowerCase().equals("book"))
+                        author = eElement.getElementsByTagName("Author").item(0).getTextContent();
+                    // artist field is optional
+                    if (type.toLowerCase().equals("cd"))
+                        artist = eElement.getElementsByTagName("Artist").item(0).getTextContent();
+                    // volume field is optional
+                    if (type.toLowerCase().equals("magazine"))
+                        volume = eElement.getElementsByTagName("Volume").item(0).getTextContent();
+
                     if (id != null && name != null && type != null && !id.equals("") && !name.equals("") && !type.equals("")) {
                         switch (type.toLowerCase()) {
                             case "cd":
@@ -299,19 +285,25 @@ public class Controller implements Serializable {
                             case "dvd":
                                 lib.addItem(new Dvd(id, name, Item.Type.DVD));
                                 break;
+                            default:
+                                System.out.println("\nInvalid type in entry: ID = " + id + " , " +
+                                        "Type = " + type + ", " + "Name = " + name);
+                                break;
                         }
                     } else {
                         System.out.println("\nInvalid entry data: ID = " + id + " , " +
-                                "Type = " + type + "' " + "Name = " + name);
+                                "Type = " + type + ", " + "Name = " + name);
                     }
-
                 }
             }
-        } catch (ParserConfigurationException e) {
-            return false;
         } catch (IOException e) {
+            System.out.println("Couldn't find file");
+            return false;
+        } catch (ParserConfigurationException e) {
+            System.out.println("Error in parsing XML file. No items added.");
             return false;
         } catch (SAXException e) {
+            System.out.println("Error in parsing XML file. No items added.");
             return false;
         }
         return true;
@@ -346,28 +338,26 @@ public class Controller implements Serializable {
         Library lib = getLib(library);
         if (mask == 0) {
             message += "\n\n***** No Item Type Selected *****";
-        }
-        else
-        {
-        	message += ("Items in Library " + lib.getLibraryType());
+        } else {
+            message += ("Items in Library " + lib.getLibraryType());
             message += "\n---------------------------------------------------------------------------------------------------------";
-	        if ((mask & 1) == 1) {
-	            message += "\n\nBooks\n----------";
-	            message += lib.displayItemsOfType(Item.Type.BOOK);
-	        }
-	        if ((mask & 2) == 2) {
+            if ((mask & 1) == 1) {
+                message += "\n\nBooks\n----------";
+                message += lib.displayItemsOfType(Item.Type.BOOK);
+            }
+            if ((mask & 2) == 2) {
                 message += "\n\nCDs\n----------";
-	            message += lib.displayItemsOfType(Item.Type.CD);
-	        }
-	        if ((mask & 4) == 4) {
+                message += lib.displayItemsOfType(Item.Type.CD);
+            }
+            if ((mask & 4) == 4) {
                 message += "\n\nDVDs\n----------";
-	            message += lib.displayItemsOfType(Item.Type.DVD);
-	        }
-	        if ((mask & 8) == 8) {
+                message += lib.displayItemsOfType(Item.Type.DVD);
+            }
+            if ((mask & 8) == 8) {
                 message += "\n\nMagazines\n----------";
-	            message += lib.displayItemsOfType(Item.Type.MAGAZINE);
-	        }
-	        message += "\n---------------------------------------------------------------------------------------------------------";
+                message += lib.displayItemsOfType(Item.Type.MAGAZINE);
+            }
+            message += "\n---------------------------------------------------------------------------------------------------------";
         }
         return message;
     }

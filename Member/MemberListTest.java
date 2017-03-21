@@ -3,28 +3,22 @@
  */
 package Member;
 
-import static org.junit.Assert.*;
+import Items.Item;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import Items.Item;
+import static org.junit.Assert.*;
 
 public class MemberListTest
 {
 	MemberList memberlist;
 	Member member1, member2, member3;
 	Item item1, item2, item3;
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception
+
+    @Before
+    public void setUp() throws Exception
 	{
 		memberlist = new MemberList();
 		item1 = new Item("3g", "Science", Item.Type.DVD);
@@ -35,7 +29,6 @@ public class MemberListTest
 	@Test
 	public void test()
 	{
-		
 		member1 = this.memberlist.createMember("Jim");
 		assertTrue(member1 instanceof Member);
 		member2 = this.memberlist.createMember("Sam");

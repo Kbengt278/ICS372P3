@@ -13,7 +13,6 @@ public class LibraryTest {
 
     private Item itemAvailable;
     private Item itemCheckedOut;
-    private Item itemNotAvailableAndNotCheckedOut;
     private Item itemBook;
     private Item itemMagazine;
     private Item itemCd;
@@ -21,6 +20,7 @@ public class LibraryTest {
 
     @Before
     public void setUp() throws Exception {
+
         libraryTest = new Library(Library.Type.MAIN);
 
         itemAvailable = new Item("itemAvailable", "item1", Item.Type.BOOK);

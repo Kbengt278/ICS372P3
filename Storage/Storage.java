@@ -25,33 +25,39 @@ public class Storage {
 
     // Loads a Controller object from the Controller.Data.bin file.
     public static Controller loadController() {
-        try {
-            FileInputStream file = new FileInputStream(controllerFile);
-            ObjectInputStream input = new ObjectInputStream(file);
-            app = (Controller) input.readObject();
-            input.close();
-            file.close();
+        File checkFileExists = new File(controllerFile);
+        if (checkFileExists.exists()) {
+            try {
+                FileInputStream file = new FileInputStream(controllerFile);
+                ObjectInputStream input = new ObjectInputStream(file);
+                app = (Controller) input.readObject();
+                input.close();
+                file.close();
+            }
+            // If the controller file is not found, notify the user that it did not load.
+            catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(null,
+                        "Controller file not found.");
+            }
+            // If there is an IO Exception other than the file isn't found, notify the user and prompt them to restart the application.
+            catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Error loading controller file. Restart the application" +
+                        " to try loading the file again.");
+            }
+            // If there is a ClassNotFoundException, there's something wrong with how the app loaded since it's probably missing a jar or
+            // one of the other class files.
+            catch (ClassNotFoundException e) {
+                JOptionPane.showMessageDialog(null, "Error starting the library application. Restart the application" +
+                        " to try loading the file again.");
+            }
+        } else {
+            try {
+                checkFileExists.createNewFile();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Error creating controller file. Restart the application" +
+                        " to try creating the file again.");
+            }
         }
-        // If the controller file is not found, notify the user that it did not load.
-        catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null,
-                    "Controller file not found.");
-        }
-        // If there is an IO Exception other than the file isn't found, notify the user and prompt them to restart the application.
-        catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error loading controller file. Restart the application" +
-                    " to try loading the file again.");
-        }
-        // If there is a ClassNotFoundException, there's something wrong with how the app loaded since it's probably missing a jar or
-        // one of the other class files.
-        catch (ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Error starting the library application. Restart the application" +
-                    " to try loading the file again.");
-        }
-
-        /* TODO are we going to include an empty controller file when we turn this in? If one doesn't exist on the first run,
-         * it is throwing FileNotFoundException. That or we need to try creating it first, since we aren't even making empty files if
-         * it doesn't already exist now. */
         return app;
     }
 
@@ -75,7 +81,7 @@ public class Storage {
         // This means any saved information was not loaded, so information used could be inaccurate.
         catch (IOException e) {
             JOptionPane.showMessageDialog(null,
-                    "Could not load the list of library member. Restart the application.");
+                    "Could not load the list of library members. Restart the application.");
         }
         return server;
     }
@@ -98,7 +104,7 @@ public class Storage {
         // If the Controller object couldn't be saved to the controllerFile, warn the user no changes were saved.
         catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null,
-                    "Could not save changes. Please try again.");
+                    "Could not save changesto the controller file. Please try again.");
             return false;
         }
         // This means there was an error writing to or closing the Controller file. Warn the user the changes may not have saved.
@@ -149,7 +155,7 @@ public class Storage {
         // If the Controller object couldn't be saved to the controllerFile, warn the user no changes were saved.
         catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null,
-                    "Could not save changes. Please try again.");
+                    "Could not save changesto the controller file. Please try again.");
             return false;
         }
         // This means there was an error writing to or closing the Controller file. Warn the user the changes may not have saved.

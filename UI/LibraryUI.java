@@ -144,7 +144,7 @@ public class LibraryUI extends Application {
             try {
                 text.appendText(app.checkIn(itemId.getText().trim(), library));
             } catch (NumberFormatException ex) {
-                text.appendText("Incorrect card number format\n");
+                text.appendText("\nIncorrect card number format");
             }
         });
 
@@ -155,7 +155,7 @@ public class LibraryUI extends Application {
             try {
                 text.appendText(app.checkOut((Integer.parseInt(cardNumber.getText().trim())), itemId.getText().trim(), library));
             } catch (NumberFormatException ex) {
-                text.appendText("Incorrect card number format\n");
+                text.appendText("\nIncorrect card number format");
             }
         });
 
@@ -167,7 +167,7 @@ public class LibraryUI extends Application {
                 text.clear();
                 text.appendText(app.displayMemberCheckedOutItems((Integer.parseInt(cardNumber.getText().trim()))));
             } catch (NumberFormatException ex) {
-                text.appendText("Incorrect card number format\n");
+                text.appendText("\nIncorrect card number format");
             }
         });
 
@@ -192,9 +192,9 @@ public class LibraryUI extends Application {
             File file = fileChooser.showOpenDialog(primaryStage);
             if (file != null) {
                 app.addFileData(file, library);
-                text.appendText("File added: " + file.getAbsolutePath() + "\n");
+                text.appendText("\nFile added: " + file.getAbsolutePath());
             } else {
-                text.appendText("No file added." + "\n");
+                text.appendText("\nNo file added.");
             }
         });
 
@@ -232,9 +232,9 @@ public class LibraryUI extends Application {
                     library = Library.Library.Type.SISTER;
                 }
                 if (library ==  Library.Library.Type.MAIN)
-                    text.appendText("Main Library:\n");
+                    text.appendText("\nMain Library:");
                 else
-                    text.appendText("Sister Library:\n");
+                    text.appendText("\nSister Library:");
 
             }
         });
