@@ -2,6 +2,7 @@ participant User
 participant LibraryUI
 participant Controller
 participant Library
+participant Item
 participant MemberList
 participant Storage
 
@@ -10,10 +11,12 @@ User->LibraryUI: Enter item ID
 User->LibraryUI: Click check in
 LibraryUI->Controller: checkIn(itemId, library)
 Controller->Library: checkIn(itemId)
-Library->Library: item.setAvailable(true);
-Library->Library: item.setDateDue(null);
-Library-->Controller: return Boolean successStatus
-Controller->MemberList: removeItem(itemId)
+Library->Item: setAvailable(true);
+Library->Item: setDateDue(null);
+Library-->Controller: Boolean success status
+Controller->MemberList: getMemberWithItem(item).removeItem(item)
+Controller->Item: item.toString
+Item-->Controller: message = item data as string
 Controller->Storage: save changes
-Controller-->LibraryUI: return String successMessage
+Controller-->LibraryUI: message
 LibraryUI-->User: Item checked in successfully

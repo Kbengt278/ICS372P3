@@ -7,6 +7,8 @@ participant Storage
 User->LibraryUI:Enter file data
 LibraryUI->Controller: addFileData(file, library)
 Controller->Controller: call appropriate file parsing sub-method (for Json or XML)
+loop for all valid items
 Controller->Library: lib.addItem(new Item)
 Library->Library: list.put(item.getId(), item)
+end
 Library->Storage: save changes

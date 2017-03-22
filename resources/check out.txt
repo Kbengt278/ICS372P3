@@ -2,7 +2,9 @@ participant User
 participant LibraryUI
 participant Controller
 participant Library
+participant Item
 participant MemberList
+participant Member
 participant Storage
 
 User->LibraryUI: Choose library to use
@@ -11,14 +13,15 @@ User->LibraryUI: Enter item ID
 User->LibraryUI: Click check out
 LibraryUI->Controller:  checkOut(cardNumber, itemId, library)
 Controller->MemberList: getMember(cardNumber)
-MemberList-->Controller: return member
-Controller->Library: checkOut(itemId, member)
-Library->Library: set available to false
-Library->Library: set due date
-Library-->Controller: return Boolean successStatus
-Controller->MemberList: addItem(itemId)
-Controller->Library: getDateDue()
-Library-->Controller: return due date
+MemberList-->Controller: member
+Controller->Controller: check member is valid
+Controller->Library: checkOut(itemId)
+Library->Item: setAvailable(false);
+Library->Item: set due date
+Library-->Controller: Boolean success status
+Controller->Member: addItem(itemId)
+Controller->Item: item.toString
+Item-->Controller: message = item data as string
 Controller->Storage: save changes
-Controller-->LibraryUI: return String successMessage
+Controller-->LibraryUI: message
 LibraryUI-->User: Item checked out successfully, due date is:

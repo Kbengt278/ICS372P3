@@ -47,12 +47,12 @@
       "item_id": "85546"
     },
     {
-      "item_name": "The Rose Error1",
+      "item_name": "The Rose (invalid id)",
       "item_type": "DVD",
       "item_id": ""
     },
     {
-      "item_name": "The Rose Error2",
+      "item_name": "The Rose (invalid type)",
       "item_type": "VHS",
       "item_id": "123jjkl"
     },
