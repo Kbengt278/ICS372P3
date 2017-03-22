@@ -123,26 +123,34 @@ public class Controller implements Serializable {
      * @return false if file can't be read
      */
     boolean addFileDataJson(File file, Library lib) {
+        // id will hold the Item id from the parsed file
         String id = "";
+        // type will hold the Item subtype: book, cd, dvd, or magazine
         String type = "";
+        // name holds the title of the object, e.g. book name, album title, magazine title
         String name = "";
+        // optionField holds an optional volume value that might be provided with books, magazines, and CDs
         String optionalField = "";
+        // textLine holds all of the JSON after it iterates through the file.
         String textLine = "";
+        // keyName holds the key name of one key-value pair while parsing the JSON file.
         String keyName = "";
+        // value holds the value of one key-value pair while parsing the JSON file.
         String value = "";
+        // startArray flags true when we start iterating through the JSON file (checking START_ARRAY);
+        // goes through and parses the objects out of the file while still true, and then
+        // it flags back to false once we are done going through and the JSONParser event is END_ARRAY.
         boolean startArray = false;
 
         Scanner input = null;
         try {
             input = new Scanner(file);
-        } catch (FileNotFoundException e) {
-            System.out.println("Couldn't find file");
-            return false;
-        }
-        try {
             while (input.hasNext()) {
                 textLine = textLine + input.nextLine() + "\n";
             }
+        } catch (FileNotFoundException e) {
+            System.out.println("Couldn't find file");
+            return false;
         } catch (NullPointerException e) {
             System.out.println("Couldn't find file");
         }
@@ -160,6 +168,7 @@ public class Controller implements Serializable {
                     break;
                 case END_OBJECT:
                     if (startArray) {
+                        // Checks that we are not missing any id, name, and type values for the object
                         if (id != null && name != null && type != null && !id.equals("") && !name.equals("") && !type.equals("")) {
                             switch (type.toLowerCase()) {
                                 case "cd":
@@ -185,6 +194,7 @@ public class Controller implements Serializable {
                         }
                     }
                     break;
+                // Clear the values to empty when parsing a new object from the file
                 case START_OBJECT:
                     id = "";
                     name = "";

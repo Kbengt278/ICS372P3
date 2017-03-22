@@ -18,6 +18,8 @@ public class Storage {
     // controllerFile is a serialized copy of a Controller object, which contains the main library,
     // sister library, and member list.
     private static final String controllerFile = "ControllerData.bin";
+    // memberServerFile contains a serialized copy of a MemberIdServer object. This keeps track of
+    // the next member ID to use for new members (increments by 1 for each new ID).
     private static final String memberServerFile = "MemberServerData.bin";
 
     private static Controller app = new Controller();

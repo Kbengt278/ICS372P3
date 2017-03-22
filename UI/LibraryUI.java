@@ -26,12 +26,24 @@ import java.util.Optional;
 
 public class LibraryUI extends Application {
 
+    // itemID is the unique string identifier (digits and letters) for a library item,
+    // and is tracked during check in's and check out's.
     private final TextField itemId = new TextField();
+    // cardNumber is a unique integer associated with a library user. The card numbers are
+    // incremented up by 1 each time a user is added via the MemberIdServer class.
     private final TextField cardNumber = new TextField();
+    // text area for outputting messages to the user during program execution.
     private final TextArea text = new TextArea();
+    // Allows for scrolling of the text area; important for listing library items and
+    // outputting longer checked-out lists for the user.
     private final ScrollPane scrollPane = new ScrollPane();
+    // fileChooser is used to pick the XML and JSON files sent from the sister library and add them
+    // to the application data.
     private final FileChooser fileChooser = new FileChooser();
+    // Specifies that this application is the main Library using Type
     private Library.Library.Type library = Library.Library.Type.MAIN;
+    // Instantiation of the Controller object that will load any serialized Controller data, and then be used
+    // in the execution of the application.
     private Controller app = new Controller();
 
     public static void main(String[] args) {
@@ -180,6 +192,8 @@ public class LibraryUI extends Application {
             newMember.setContentText("Enter Member Name:");
 
             Optional<String> result = newMember.showAndWait();
+            // if Optional contains a value, it will get it and the Controller will add a new member
+            // with the next member ID available via MemberIdServer.
             if (result.isPresent()) {
                 text.appendText(app.addMember(result.get()));
             }
@@ -200,6 +214,7 @@ public class LibraryUI extends Application {
 
         //
         // Process the btDisplay button -- calls the displayLibraryItems() method
+        // Masks allow for the selection of more than one Item type to display.
         //
         btDisplay.setOnAction(e -> {
             text.clear();
