@@ -271,6 +271,8 @@ public class Controller implements Serializable {
 
             NodeList nList = doc.getElementsByTagName("Item");
 
+            // Iterate through the list of nodes pulled from the DOM Document object. Add valid items to the library,
+            // and print out a warning when the nodes are missing mandatory information.
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -282,9 +284,17 @@ public class Controller implements Serializable {
                     artist = "";
                     volume = "";
 
-                    id = eElement.getAttribute("id");
-                    type = eElement.getAttribute("type");
-                    name = eElement.getElementsByTagName("Name").item(0).getTextContent();
+                    try {
+                        id = eElement.getAttribute("id");
+                        type = eElement.getAttribute("type");
+                        name = eElement.getElementsByTagName("Name").item(0).getTextContent();
+                    }
+                    // If one of the mandatory attributes is null, don't add it. 
+                    catch (NullPointerException e) {
+                        System.out.println("\nEntry missing an ID, type, and/or name: ID = " + id + " , " +
+                                "Type = " + type + ", " + "Name = " + name);
+                        continue;
+                    }
                     // author field is optional
                     if (type.toLowerCase().equals("book"))
                         author = eElement.getElementsByTagName("Author").item(0).getTextContent();
