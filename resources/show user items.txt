@@ -6,12 +6,12 @@ participant Member
 User->LibraryUI: Enter library card number
 User->LibraryUI: Click user's checked out items button
 LibraryUI->Controller: displayMemberCheckedOutItems\n(cardNumber)
-
-Controller->Controller: this.memberList.getMember\n(cardNumber)
+Controller->Controller: memberList.getMember\n(cardNumber)
 Controller->Member: getCheckedOutItems()
-
-loop for items in member's checkedOutItems
-    Controller->Controller: item.toString
+Member-->Controller: list of that\n member's items
+loop for the member's items
+    Controller->Item: item.toString
+    Item-->Controller: message = item data as string
 end
-Controller-->LibraryUI: return String successMessage
+Controller-->LibraryUI: message
 LibraryUI-->User: display items
