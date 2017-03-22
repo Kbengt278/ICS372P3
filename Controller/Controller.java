@@ -194,7 +194,7 @@ public class Controller implements Serializable {
                         }
                     }
                     break;
-                // Clear the values to empty when parsing a new object from the file
+                // Clear the values to empty when parsing a new object
                 case START_OBJECT:
                     id = "";
                     name = "";
@@ -241,18 +241,32 @@ public class Controller implements Serializable {
      * @return false if file can't be read
      */
     boolean addFileDataXml(File file, Library lib) {
+        // id will hold the Item id of a DOM object from the parsed file
         String id = "";
+        // type will hold the Item subtype: book, cd, dvd, or magazine
         String type = "";
+        // name holds the title of the object, e.g. book name, album title, magazine title
         String name = "";
+        // author holds the author value for books
         String author = "";
+        // artist holds the artist value for CDs
         String artist = "";
+        // volume holds the volume # for magazine
         String volume = "";
+        // doc is the instantiation of the object for the XML file
         Document doc = null;
 
         try {
+            // dbFactory is an abstract class, using a factory API
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            // dBuilder created using the DocumentBuilderFactor instance
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            // parses the XML file using the DocumentBuilder and returns a DOM Document object
             doc = dBuilder.parse(file);
+            // getDocumentElement directly accesses the child node of the document element, and normalize
+            // makes it so the text of a given node is combined and only separated by the actual structure
+            // of the text nodes. It eliminates any empty text that's part of the node, and combines
+            // the multiple lines of it.
             doc.getDocumentElement().normalize();
 
             NodeList nList = doc.getElementsByTagName("Item");
