@@ -106,7 +106,7 @@ public class ControllerTest {
 
         // test success
         response = testController.checkOut(1, "itemAvailable", Library.Type.MAIN);
-        assertTrue(response.contains("Checkout successful"));
+        assertTrue(response.contains("Checkout Successful"));
     }
 
     @Test
@@ -126,12 +126,13 @@ public class ControllerTest {
 
         // test success
         response = testController.checkIn("itemCheckedOutBy1", Library.Type.MAIN);
-        assertTrue(response.contains("Checkin successful"));
+        assertTrue(response.contains("Checkin Successful"));
     }
 
     @Test
     public void addFileData() throws Exception {
-
+        testAddFileDataJson();
+        testAddFileDataXml();
     }
 
     @Test
@@ -143,7 +144,12 @@ public class ControllerTest {
         // First test for a nonexistent file
         //
         File file = new File("TestFileDoesNotExist.json");
-        testController.addFileDataJson(file, lib);
+        testController.addFileData(file, Library.Type.MAIN);
+        //
+        // Now test for a wrong file type
+        //
+        file = new File("TestWrongFileType.txt");
+        testController.addFileData(file, Library.Type.MAIN);
         //
         // Now test with a valid file that has three entries that have errors :
         // 1) No ID (ID = "")
@@ -167,7 +173,7 @@ public class ControllerTest {
         // First test for a nonexistent file
         //
         File file = new File("TestFileDoesNotExist.xml");
-        testController.addFileDataXml(file, lib);
+        testController.addFileData(file, Library.Type.MAIN);
         //
         // Now test with a valid file that has three entries that have errors :
         // 1) No ID (ID = "")
@@ -189,7 +195,11 @@ public class ControllerTest {
 
     @Test
     public void displayLibraryItems() throws Exception {
+        // Test no item types selected
         String response = "";
+        response = testController.displayLibraryItems(0, Library.Type.MAIN);
+        assertTrue(response.contains("***** No Item Type Selected *****"));
+        // Test when all item types selected
         response = testController.displayLibraryItems(1 + 2 + 4 + 8, Library.Type.MAIN);
         assertTrue(response.contains("Book1"));
         assertTrue(response.contains("Magazine1"));
@@ -199,7 +209,12 @@ public class ControllerTest {
 
     @Test
     public void displayMemberCheckedOutItems() throws Exception {
+        // Test for an invalid member number
         String response = "";
+        response = testController.displayMemberCheckedOutItems(200);
+        assertTrue(response.contains("***** Library card number "));
+        assertTrue(response.contains("***** Library card number 200 is invalid *****"));
+        // Test with valid member number
         response = testController.displayMemberCheckedOutItems(2);
         assertTrue(response.contains("Book1"));
         assertTrue(response.contains("Magazine1"));

@@ -48,6 +48,7 @@ public class MemberListTest
 		assertEquals(this.member3, this.memberlist.getMemberWithItem(item3));
 		this.member3.removeItem(item3);
 		assertFalse(this.member3.hasItem(item3));
+		assertEquals(null, this.memberlist.getMemberWithItem(item3));
 	}
 
 }

@@ -74,4 +74,15 @@ public class LibraryTest {
 
     }
 
+    @Test
+    public void getLibraryType() throws Exception {
+        Library.Type type = libraryTest.getLibraryType();
+        assertEquals(type, Library.Type.MAIN);
+    }
+
+    @Test
+    public void size() throws Exception {
+        assertEquals(6, libraryTest.size());
+    }
+
 }
