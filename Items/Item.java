@@ -15,6 +15,7 @@ public class Item implements Serializable {
     private Item.Type type;
     private boolean available;    // Available in the library - false = checked out
     private Calendar dateDue;     // Due date
+    private Status status;
 
     public Item() {
     }
@@ -25,6 +26,7 @@ public class Item implements Serializable {
         this.type = type;
         this.available = true;
         this.dateDue = Calendar.getInstance();
+        this.status = Status.CHECKED_IN;
     }
 
     public String getId() {
@@ -75,6 +77,14 @@ public class Item implements Serializable {
         this.checkOutTimeDays = checkOutTimeDays;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     /**
      * @return Makes a string of the attributes of the item.
      */
@@ -100,5 +110,9 @@ public class Item implements Serializable {
 
     public enum Type {
         BOOK, CD, DVD, MAGAZINE
+    }
+
+    public enum Status {
+        CHECKED_IN, CHECKED_OUT, MISSING, OVERDUE, SHELVING, REMOVED_FROM_CIRCULATION, REFERENCE_ONLY, CHECK_STATUS
     }
 }

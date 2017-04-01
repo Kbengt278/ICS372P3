@@ -2,6 +2,7 @@ package Library;
 
 
 import Items.Item;
+import Items.Item.Status;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -41,6 +42,7 @@ public class Library implements Serializable {
             cal.add(Calendar.DAY_OF_YEAR, item.getCheckOutTimeDays());
             item.setAvailable(false);
             item.setDateDue(cal);
+            item.setStatus(Item.Status.CHECKED_OUT);
             return true;
         }
     }
@@ -60,8 +62,36 @@ public class Library implements Serializable {
         } else if (item.isAvailable()) {
             return false;
         } else {
-            item.setAvailable(true);
+            item.setStatus(Status.SHELVING);
             item.setDateDue(null);
+            return true;
+        }
+    }
+
+    /**
+     * handles changing the status of an item
+     * sets the item's status to the input status
+     *
+     * @param itemId id of the item to check in
+     * @param status status to change
+     * @return null if item does not exist, otherwise true
+     */
+    public Boolean changeStatus(String itemId, Item.Status status) {
+        Item item = itemList.get(itemId);
+        if (item == null) {
+            return false;
+        } else {
+            if (status == Status.CHECK_STATUS)
+                return true;
+            item.setStatus(status);
+            if (status == Status.CHECKED_IN){
+                item.setAvailable(true);
+            }
+            if (status == Status.MISSING || status == Status.REFERENCE_ONLY || status == Status.REMOVED_FROM_CIRCULATION
+                    || status == Status.SHELVING) {
+                item.setAvailable(false);
+            }
+
             return true;
         }
     }
@@ -76,7 +106,7 @@ public class Library implements Serializable {
         String message = "";
         for (Item value : itemList.values()) {
             if (type.equals(value.getType())) {
-                message += "\n" + value.toString();
+                message += "\n" + value.toString() + " Status : " + value.getStatus();
             }
         }
         return message;

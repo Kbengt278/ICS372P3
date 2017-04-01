@@ -1,9 +1,13 @@
 package UI;
 
 import Controller.Controller;
+import Items.Item;
+import Items.Item.Status;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -29,6 +34,7 @@ public class LibraryUI extends Application {
     // itemID is the unique string identifier (digits and letters) for a library item,
     // and is tracked during check in's and check out's.
     private final TextField itemId = new TextField();
+    private final TextField itemId2 = new TextField();
     // cardNumber is a unique integer associated with a library user. The card numbers are
     // incremented up by 1 each time a user is added via the MemberIdServer class.
     private final TextField cardNumber = new TextField();
@@ -45,6 +51,7 @@ public class LibraryUI extends Application {
     // Instantiation of the Controller object that will load any serialized Controller data, and then be used
     // in the execution of the application.
     private Controller app = new Controller();
+    Stage changeItemStatusStage = new Stage();
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -105,12 +112,14 @@ public class LibraryUI extends Application {
         btCheckOut.setMaxWidth(Double.MAX_VALUE);
         Button btCheckIn = new Button("Check In");
         btCheckIn.setMaxWidth(Double.MAX_VALUE);
+        Button btChangeItemStatus = new Button("Change/Check Item Status");
+        btChangeItemStatus.setMaxWidth(Double.MAX_VALUE);
         Button btDisplay = new Button("Display Library Items");
         btDisplay.setMaxWidth(Double.MAX_VALUE);
         Button btCheckedOut = new Button("User's checked out items");
         btCheckedOut.setMaxWidth(Double.MAX_VALUE);
         rightTopPane.getChildren().addAll(itemId, cardNumber, btAddFileData, btAddMember, btCheckOut,
-                btCheckIn, btCheckedOut, btDisplay);
+                btCheckIn, btChangeItemStatus, btCheckedOut, btDisplay);
 
         // put the VBoxs in the HBox Top pane
         topPane.getChildren().addAll(leftTopPane, rightTopPane);
@@ -138,8 +147,8 @@ public class LibraryUI extends Application {
         //
         Scene scene = new Scene(pane);
         primaryStage.setTitle("Library"); // Set the stage title
-        primaryStage.setHeight(700);
-        primaryStage.setWidth(650);
+        primaryStage.setHeight(750);
+        primaryStage.setWidth(750);
         primaryStage.setScene(scene); // Place the scene in the stage
         primaryStage.show(); // Display the stage
 
@@ -148,6 +157,7 @@ public class LibraryUI extends Application {
                 new FileChooser.ExtensionFilter("JSON", "*.json"),
                 new FileChooser.ExtensionFilter("XML", "*.xml")
         );
+
 
         //
         // Process the btCheckIn button -- call the checkIn() method
@@ -158,6 +168,101 @@ public class LibraryUI extends Application {
             } catch (NumberFormatException ex) {
                 text.appendText("\nIncorrect card number format");
             }
+        });
+
+        //
+        // Create the ChangeItemStatus Popup
+        //
+        // Create a border pane
+        VBox pane2 = new VBox();
+
+        // Create a HBox plane for the Top pane
+        HBox topPane2 = new HBox();
+        topPane2.setAlignment(Pos.CENTER);
+        topPane2.setPadding(new Insets(.5, .5, .5, .5));
+
+        // Create the radio buttons for the States
+        final ToggleGroup states = new ToggleGroup();
+        RadioButton rbCheckStatus = new RadioButton("Check Item Status");
+        rbCheckStatus.setToggleGroup(states);
+        RadioButton rbCheckedIn = new RadioButton("Checked In");
+        rbCheckedIn.setToggleGroup(states);
+        RadioButton rbMissing = new RadioButton("Missing");
+        rbMissing.setToggleGroup(states);
+        RadioButton rbOverdue = new RadioButton("Overdue");
+        rbOverdue.setToggleGroup(states);
+        RadioButton rbShelving = new RadioButton("Shelving");
+        rbShelving.setToggleGroup(states);
+        RadioButton rbRemoved = new RadioButton("Removed From Circulation");
+        rbRemoved.setToggleGroup(states);
+        RadioButton rbReference = new RadioButton("Reference Only");
+        rbReference.setToggleGroup(states);
+        VBox bottomPane = new VBox();
+        bottomPane.setPadding(new Insets(.5, .5, .5, 6.5));
+        bottomPane.getChildren().addAll(rbCheckStatus, rbCheckedIn, rbMissing, rbOverdue, rbReference, rbRemoved, rbShelving);
+
+        // Create the left top VBox
+        VBox leftTopPane2 = new VBox(9);
+        leftTopPane2.setAlignment(Pos.BASELINE_LEFT);
+        leftTopPane2.getChildren().addAll(new Label("Item ID: "));
+
+
+        // Create the right top VBox for the HBox Top pane
+        VBox rightTopPane2 = new VBox();
+        rightTopPane2.getChildren().addAll(itemId2);
+
+        // put the VBoxs in the HBox Top pane
+        topPane2.getChildren().addAll(leftTopPane2, rightTopPane2);
+        HBox.setHgrow(leftTopPane2, Priority.ALWAYS);
+        HBox.setHgrow(rightTopPane2, Priority.ALWAYS);
+
+        HBox buttonPane = new HBox();
+        buttonPane.setPadding(new Insets(3.5, 3.5, .5, 6.5));
+        Button btSave = new Button("Save");
+        buttonPane.setAlignment(Pos.CENTER);
+        buttonPane.getChildren().addAll(btSave);
+
+
+        pane2.getChildren().addAll(topPane2, bottomPane, buttonPane);
+//        changeItemStatusStage.setTitle("Change Item State");
+        changeItemStatusStage.setTitle("Change/Check Item Status"); // Set the stage title
+        changeItemStatusStage.setHeight(250);
+        changeItemStatusStage.setWidth(300);
+        changeItemStatusStage.setScene(new Scene(pane2)); // Place the scene in the stage
+
+        btSave.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+//                System.out.println("Click save");
+                if (rbMissing.isSelected()) {
+                    text.appendText(app.changeItemStatus(itemId2.getText().trim(),Item.Status.MISSING, library));
+                } else if (rbOverdue.isSelected()) {
+                    text.appendText(app.changeItemStatus(itemId2.getText().trim(),Item.Status.OVERDUE, library));
+                } else if (rbCheckStatus.isSelected()) {
+                    text.appendText(app.changeItemStatus(itemId2.getText().trim(),Item.Status.CHECK_STATUS, library));
+                } else if (rbReference.isSelected()) {
+                    text.appendText(app.changeItemStatus(itemId2.getText().trim(), Status.REFERENCE_ONLY, library));
+                } else if (rbRemoved.isSelected()) {
+                    text.appendText(app.changeItemStatus(itemId2.getText().trim(), Status.REMOVED_FROM_CIRCULATION, library));
+                }  else if (rbShelving.isSelected()) {
+                    text.appendText(app.changeItemStatus(itemId2.getText().trim(), Status.SHELVING, library));
+                } else if (rbCheckedIn.isSelected()) {
+                    text.appendText(app.changeItemStatus(itemId2.getText().trim(), Status.CHECKED_IN, library));
+                } else {
+                    text.appendText("No action taken, there was no status button selected");
+                }
+//                System.out.println(itemId.getText().trim());
+//                System.out.println(Status.CHECKED_IN.toString());
+                changeItemStatusStage.close();
+            }
+        });
+
+
+        //
+        // Process the btCheckIn button -- call the checkIn() method
+        //
+        btChangeItemStatus.setOnAction(e -> {
+                changeItemStatusStage.showAndWait();
         });
 
         //

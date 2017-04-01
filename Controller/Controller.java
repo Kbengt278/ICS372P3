@@ -54,11 +54,11 @@ public class Controller implements Serializable {
             if (isCheckedIn == null)
                 message += "\n\n***** Item " + itemId + " does not exist *****";
             else if (!isCheckedIn)
-                message += "\n\n***** Item " + itemId + " is currently checked out. *****";
+                message += "\n\n***** Item " + itemId + " is currently not available for checkout. *****";
             else {
                 member.addItem(lib.getItem(itemId));
-                message += "\n\n***** Checkout Successful *****";
-                message += lib.getItem(itemId).toString();
+                message += "\n\n***** Checkout Successful *****\n";
+                message += lib.getItem(itemId).toString() + " Status : " + lib.getItem(itemId).getStatus();
             }
         } else
             message += "\n\n***** Library card number " + cardNumber + " is invalid *****";
@@ -86,11 +86,32 @@ public class Controller implements Serializable {
         else {
             try {
                 memberList.getMemberWithItem(lib.getItem(itemId)).removeItem(lib.getItem(itemId));
-                message += "\n\n***** Checkin Successful *****";
-                message += lib.getItem(itemId).toString();
+                message += "\n\n***** Checkin Successful *****\n";
+                message += lib.getItem(itemId).toString() + " Status : " + lib.getItem(itemId).getStatus();
             } catch (NullPointerException e) {
                 message += "\n\n***** Error: Item " + itemId + " is marked as checked out but no member has it checked out. *****";
             }
+        }
+        Storage.save(this);
+        return message;
+    }
+
+    /**
+     * Checks in the item to the UI set library.
+     *
+     * @param itemId  id of the item to check in
+     * @param library library type of where the item is
+     * @return text to display to user
+     */
+    public String changeItemStatus(String itemId, Item.Status status, Library.Type library) {
+        String message = "";
+        Library lib = getLib(library);
+
+        if (!lib.changeStatus(itemId, status))
+            message += "\n\n***** Item " + itemId + " does not exist *****";
+        else {
+            message += "\n\n***** Status change Successful *****\n";
+            message += lib.getItem(itemId).toString() + " Status : " + lib.getItem(itemId).getStatus();
         }
         Storage.save(this);
         return message;
