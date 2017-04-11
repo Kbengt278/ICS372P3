@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Library App</string>
+    <string name="addFile">Add File Data</string>
+    <string name="addMember">Add Member</string>
+    <string name="checkInOut">Check In/Check Out Materials</string>
+    <string name="itemStatus">Item Status</string>
+    <string name="membersItems">Member\'s Checked Out Items</string>
+    <string name="displayLibrary">Display Library Items</string>
+    <string name="memberNumber">Card Number</string>
+    <string name="itemId">Item ID</string>
+    <string name="mainLib">Main Library</string>
+    <string name="sisLib">Sister Library</string>
+    <string name="checkOut">Check Out</string>
+    <string name="checkIn">Check In</string>
+    <string name="main_library">Main Library</string>
+    <string name="sister_library">Sister Library</string>
+
+</resources>
