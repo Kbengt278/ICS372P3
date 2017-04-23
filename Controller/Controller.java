@@ -104,9 +104,13 @@ public class Controller implements Serializable {
      * @return text to display to user
      */
     public String changeItemStatus(String itemId, Item.Status status, Library.Type library) {
-        String message = "";
         Library lib = getLib(library);
+        Item item = lib.getItem(itemId);
+        String message = "";
 
+        if (status == Item.Status.CHECKED_IN && item.getStatus() == Item.Status.CHECKED_OUT){
+            return checkIn(itemId, library);
+        }
         if (!lib.changeStatus(itemId, status))
             message += "\n\n***** Item " + itemId + " does not exist *****";
         else {
